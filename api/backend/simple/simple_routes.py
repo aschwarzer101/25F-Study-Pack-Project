@@ -20,7 +20,7 @@ simple_routes = Blueprint("simple_routes", __name__)
 # / is the most basic route
 # Once the api container is started, in a browser, go to
 # localhost:4000/playlist
-@simple_routes.route("/")
+@simple_routes.route("/") #tells flask anytime you get request to '/' route come here and execute
 def welcome():
     current_app.logger.info("GET / handler")
     welcome_message = "<h1>Welcome to the CS 3200 Project Template REST API"
