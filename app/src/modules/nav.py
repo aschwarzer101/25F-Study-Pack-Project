@@ -35,7 +35,7 @@ def MapDemoNav():
 
 def usaidWorkerHomeNav():
     st.sidebar.page_link(
-      "pages/10_USAID_Worker_Home.py", label="USAID Worker Home", icon="🏠"
+      "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon="🏠"
     )
 
 def NgoDirectoryNav():
@@ -96,8 +96,8 @@ def SideBarLinks(show_home=False):
             WorldBankVizNav()
             MapDemoNav()
 
-        # If the user role is usaid worker, show the Api Testing page
-        if st.session_state["role"] == "usaid_worker":
+        # If the user role is a ta admin, show the Api Testing page
+        if st.session_state["role"] == "ta_admin":
             usaidWorkerHomeNav()
             NgoDirectoryNav()
             AddNgoNav()
