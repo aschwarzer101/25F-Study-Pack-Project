@@ -14,15 +14,15 @@ st.write('')
 st.write('')
 st.write('### What would you like to do today?')
 
-if st.button('Student Roster', 
+if st.button('View + Update Student Roster', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/14_NGO_Directory.py')
+  st.switch_page('pages/14_Student_Directory.py')
 
 if st.button('Study Session Requests', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/15_Add_NGO.py')
+  st.switch_page('pages/15_Session_Requests.py')
 
 if st.button('Predict Value Based on Regression Model', 
              type='primary',

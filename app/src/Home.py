@@ -65,6 +65,7 @@ if st.button('Act as Gabby Gutierrez, a TA administrator',
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'ta_admin'
     st.session_state['first_name'] = 'Gabby'
+    logger.info("logging in as TA administrator")
     st.switch_page('pages/10_TA_Admin_Home.py')
 
 if st.button('Act as Jean-Baptiste Clamence, a Computer Science Student at Northeastern', 

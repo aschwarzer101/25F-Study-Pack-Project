@@ -6,7 +6,7 @@ from modules.nav import SideBarLinks
 # Initialize sidebar
 SideBarLinks()
 
-st.title("NGO Directory")
+st.title("Student Directory")
 
 # API endpoint
 API_URL = "http://web-api:4000/ngo/ngos"

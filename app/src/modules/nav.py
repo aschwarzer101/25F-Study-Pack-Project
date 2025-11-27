@@ -33,16 +33,16 @@ def MapDemoNav():
 
 ## ------------------------ Examples for Role of usaid_worker ------------------------
 
-def usaidWorkerHomeNav():
+def TAAdminHomeNav():
     st.sidebar.page_link(
       "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon="🏠"
     )
 
-def NgoDirectoryNav():
-    st.sidebar.page_link("pages/14_NGO_Directory.py", label="NGO Directory", icon="📁")
+def StudentDirectoryNav():
+    st.sidebar.page_link("pages/14_Student_Directory.py", label="Student Directory", icon="📁")
 
 def AddNgoNav():
-    st.sidebar.page_link("pages/15_Add_NGO.py", label="Add New NGO", icon="➕")
+    st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon="➕")
 
 def ApiTestNav():
     st.sidebar.page_link("pages/12_API_Test.py", label="Test the API", icon="🛜")
@@ -98,8 +98,8 @@ def SideBarLinks(show_home=False):
 
         # If the user role is a ta admin, show the Api Testing page
         if st.session_state["role"] == "ta_admin":
-            usaidWorkerHomeNav()
-            NgoDirectoryNav()
+            TAAdminHomeNav()
+            StudentDirectoryNav()
             AddNgoNav()
             PredictionNav()
             ApiTestNav()

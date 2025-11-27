@@ -6,7 +6,17 @@ from modules.nav import SideBarLinks
 # Initialize sidebar
 SideBarLinks()
 
-st.title("Add New NGO")
+st.title("Study Session Requests")
+
+st.button("Approved", 
+          type = 'secondary',
+          use_container_width = False, 
+          icon = "👍") 
+
+st.button("Pending Requests", 
+          type = 'secondary',
+          use_container_width = False, 
+          icon = "🔔") 
 
 # Initialize session state for modal
 if "show_success_modal" not in st.session_state:
@@ -30,7 +40,7 @@ def show_success_dialog(ngo_name):
         if st.button("Return to NGO Directory", use_container_width=True):
             st.session_state.show_success_modal = False
             st.session_state.success_ngo_name = ""
-            st.switch_page("pages/14_NGO_Directory.py")
+            st.switch_page("pages/14_Student_Directory.py")
     
     with col2:
         if st.button("Add Another NGO", use_container_width=True):
@@ -101,4 +111,4 @@ if st.session_state.show_success_modal:
 
 # Add a button to return to the NGO Directory
 if st.button("Return to NGO Directory"):
-    st.switch_page("pages/14_NGO_Directory.py")
+    st.switch_page("pages/14_Student_Directory.py")
