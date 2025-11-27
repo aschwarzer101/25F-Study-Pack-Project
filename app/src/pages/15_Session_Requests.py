@@ -8,15 +8,22 @@ SideBarLinks()
 
 st.title("Study Session Requests")
 
-st.button("Approved", 
+left, middle, right = st.columns(3)
+
+left.button("Approved Requests", 
           type = 'secondary',
           use_container_width = False, 
           icon = "👍") 
 
-st.button("Pending Requests", 
+middle.button("Pending Requests", 
           type = 'secondary',
           use_container_width = False, 
           icon = "🔔") 
+
+right.button("Rejected Requests", 
+          type = 'secondary',
+          use_container_width = False, 
+          icon = "❌") 
 
 # Initialize session state for modal
 if "show_success_modal" not in st.session_state:
