@@ -68,11 +68,11 @@ if st.button('Act as Gabby Gutierrez, a TA administrator',
     logger.info("logging in as TA administrator")
     st.switch_page('pages/10_TA_Admin_Home.py')
 
-if st.button('Act as Jean-Baptiste Clamence, a Computer Science Student at Northeastern', 
+if st.button('Act as Jean-Baptiste Clamence, a Computer Science Student', 
             type = 'primary', 
             use_container_width=True):
     st.session_state['authenticated'] = True
-    st.session_state['role'] = 'administrator'
+    st.session_state['role'] = 'student'
     st.session_state['first_name'] = 'Jean-Baptiste'
     st.switch_page('pages/20_Admin_Home.py')
 
