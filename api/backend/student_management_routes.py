@@ -6,7 +6,7 @@ from flask import current_app
 
 students = Blueprint("student management", __name__)
 
-# GET - Return a student's information [Student-6]
+# GET - Return a student's information [Student-6] [Tutor-4]
 @students.route("/student/<int:nuid>", methods=["GET"])
 def get_student_info(nuid):
    """Get information about a specific student"""
@@ -33,7 +33,7 @@ def get_student_info(nuid):
        current_app.logger.error(f'Database error: {str(e)}')
        return jsonify({"error": str(e)}), 500
 
-# PUT - Update student information [Student-6]
+# PUT - Update student information [Student-6] [TA-3]
 @students.route("/student/<int:nuid>", methods=["PUT"])
 def update_student_info(nuid):
    """Update a student's information"""

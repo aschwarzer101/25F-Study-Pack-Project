@@ -27,7 +27,7 @@ def get_course_details(crn):
    except Error as e:
        return jsonify({"error": str(e)}), 500
 
-# GET - Return materials for a course [Student-2]
+# GET - Return materials for a course [Student-2] [Tutor-3]
 @students.route("/resource", methods=["GET"])
 def get_resources():
    """Get all resources, optionally filtered by course CRN"""
@@ -58,23 +58,23 @@ def get_resources():
    except Error as e:
        return jsonify({"error": str(e)}), 500
 
-# GET - Get specific resource details
-@students.route("/resource/<int:resource_id>", methods=["GET"])
-def get_resource_details(resource_id):
-   """Get details of a specific resource"""
-   try:
-       cursor = db.get_db().cursor()
+# # GET - Get specific resource details
+# @students.route("/resource/<int:resource_id>", methods=["GET"])
+# def get_resource_details(resource_id):
+#    """Get details of a specific resource"""
+#    try:
+#        cursor = db.get_db().cursor()
       
-       cursor.execute("SELECT * FROM Resource WHERE resourceID = %s", (resource_id,))
-       resource = cursor.fetchone()
+#        cursor.execute("SELECT * FROM Resource WHERE resourceID = %s", (resource_id,))
+#        resource = cursor.fetchone()
       
-       if not resource:
-           return jsonify({"error": "Resource not found"}), 404
+#        if not resource:
+#            return jsonify({"error": "Resource not found"}), 404
       
-       cursor.close()
-       return jsonify(resource), 200
-   except Error as e:
-       return jsonify({"error": str(e)}), 500
+#        cursor.close()
+#        return jsonify(resource), 200
+#    except Error as e:
+#        return jsonify({"error": str(e)}), 500
 
 # POST - Upload material for a course [Student-2], [Professor-2], [Tutor-5]
 @students.route("/resource", methods=["POST"])
