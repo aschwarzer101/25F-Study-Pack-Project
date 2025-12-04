@@ -45,7 +45,7 @@ students = Blueprint("session location", __name__)
 #         current_app.logger.error(f'error in getting locations alayna : {str(e)}')
 #         return jsonify({"error" : str(e)}), 500
     
-# GET - Return locations of active study sessions [Student-4]
+# GET - Return locations of active study sessions [Student-4] [Tutor-1]
 @students.route("/study_location", methods=["GET"])
 def get_study_locations():
    """Get all study locations with active sessions"""
@@ -89,42 +89,42 @@ def get_study_locations():
        return jsonify({"error": str(e)}), 500
 
 
-# GET - Get specific location details
-@students.route("/study_location/<int:loc_id>", methods=["GET"])
-def get_study_location_details(loc_id):
-   """Get details of a specific study location"""
-   try:
-       cursor = db.get_db().cursor()
+# # GET - Get specific location details
+# @students.route("/study_location/<int:loc_id>", methods=["GET"])
+# def get_study_location_details(loc_id):
+#    """Get details of a specific study location"""
+#    try:
+#        cursor = db.get_db().cursor()
       
-       cursor.execute("""
-           SELECT locID, building, room, capacity, status
-           FROM StudyLocation
-           WHERE locID = %s
-       """, (loc_id,))
+#        cursor.execute("""
+#            SELECT locID, building, room, capacity, status
+#            FROM StudyLocation
+#            WHERE locID = %s
+#        """, (loc_id,))
       
-       location = cursor.fetchone()
+#        location = cursor.fetchone()
       
-       if not location:
-           return jsonify({"error": "Study location not found"}), 404
+#        if not location:
+#            return jsonify({"error": "Study location not found"}), 404
       
-       # Get upcoming sessions at this location
-       cursor.execute("""
-           SELECT sessionID, date, startTime, endTime
-           FROM StudySession
-           WHERE locID = %s AND date >= CURDATE()
-           ORDER BY date, startTime
-       """, (loc_id,))
+#        # Get upcoming sessions at this location
+#        cursor.execute("""
+#            SELECT sessionID, date, startTime, endTime
+#            FROM StudySession
+#            WHERE locID = %s AND date >= CURDATE()
+#            ORDER BY date, startTime
+#        """, (loc_id,))
       
-       sessions = cursor.fetchall()
-       location["upcoming_sessions"] = sessions
+#        sessions = cursor.fetchall()
+#        location["upcoming_sessions"] = sessions
       
-       cursor.close()
-       return jsonify(location), 200
-   except Error as e:
-       return jsonify({"error": str(e)}), 500
+#        cursor.close()
+#        return jsonify(location), 200
+#    except Error as e:
+#        return jsonify({"error": str(e)}), 500
 
 
-# GET - Return all active study sessions [Student-4]
+# GET - Return all active study sessions [Student-4] [Tutor-1]
 @students.route("/study_session", methods=["GET"])
 def get_study_sessions():
    """Get all active study sessions, optionally filtered by course or topic"""

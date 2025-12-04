@@ -6,8 +6,6 @@ from flask import current_app
 
 students = Blueprint("request tag", __name__)
 
-
-
 # POST - Create a request for a session [Student-1]
 @students.route("/session_request", methods=["POST"])
 def create_session_request():
