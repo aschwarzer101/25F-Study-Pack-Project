@@ -82,5 +82,5 @@ if st.button('Act as John Adams, a Peer Tutor for CS Students',
     st.session_state['authenticated'] = True
     st.session_state['role'] = 'administrator'
     st.session_state['first_name'] = 'John Adams'
-    st.switch_page('pages/20_Admin_Home.py')
+    st.switch_page('pages/20_Student_Home.py')
 
