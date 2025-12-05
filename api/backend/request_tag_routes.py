@@ -79,7 +79,8 @@ def get_session_requests():
             sr.dateCreated, 
             sr.status,
             sr.adminID,
-            CONCAT(s.firstName, ' ', s.lastName) AS requestingStudents,
+            GROUP_CONCAT(s.firstName) AS studentFirstNames,
+            GROUP_CONCAT(t.tagName) AS tags
         FROM SessionRequest sr
         JOIN Requesting_Students rs ON sr.requestID = rs.requestID
         JOIN Student s ON rs.nuID = s.nuID
@@ -91,11 +92,11 @@ def get_session_requests():
 
         # add status filter if provided 
         if status: 
-            query += "AND sr.status = %s"
+            query += " AND sr.status = %s"
             params.append(status)
         
         # append group by 
-        query += "GROUP BY sr.requestID ORDER BY sr.dateCreated DESC"
+        query += " GROUP BY sr.requestID ORDER BY sr.dateCreated DESC"
 
         current_app.logger.debug(f'Executing query: {query}')
         cursor.execute(query, params)
