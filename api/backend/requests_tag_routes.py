@@ -251,3 +251,44 @@ def get_tags():
         current_app.logger.error(f'Database error with get_tags: {str(e)}')
         return jsonify({"error": str(e)}), 500
 
+# POST /tags - create standard tags [TA-6]
+@requests_tags.route("/tags", methods=["POST"])
+def create_tag():
+    """
+    Create a new standardized tag [TA-6] like: 
+    Body: { "tagName": "SQL Help", "studentCreated": 0 (optional: 0 for admin-created, 1 for student-created)}
+    }
+    """
+    try: 
+        data = request.get_json()
+
+        #validate tagName 
+        if "tagName" not in data: 
+            return jsonify({"error": "Missing required field:tagName"}), 400
+        
+        cursor = db.get_db().cursor()
+
+        # Insert new tag
+        query = """
+        INSERT INTO Tag (tagName, `studentCreated?`)
+        VALUES (%s, %s)
+        """
+        cursor.execute(
+            query, 
+            (
+                data["tagName"],
+                data.get("studentCreated", 0) #default is admin created
+            )
+        )
+
+        db.get_db().commit()
+        new_tag_id = cursor.lastrowid
+        # had to look this up but i think its ok? ^
+        cursor.close()
+
+        return jsonify({
+            "message": "Tag created",
+            "tagID": new_tag_id
+        }), 201
+    except Error as e:
+        return jsonify({"error":str(e)}), 500
