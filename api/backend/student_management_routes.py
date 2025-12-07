@@ -4,7 +4,7 @@ from mysql.connector import Error
 from flask import current_app
 
 
-student_management = Blueprint("student management", __name__)
+student_management = Blueprint("student_management", __name__)
 
 # GET - Return a student's information [Student-6] [Tutor-4]
 @student_management.route("/student/<int:nuid>", methods=["GET"])

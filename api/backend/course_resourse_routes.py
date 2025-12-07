@@ -4,10 +4,10 @@ from mysql.connector import Error
 from flask import current_app
 
 
-course_resource = Blueprint("course resources", __name__)
+course_resources = Blueprint("course_resources", __name__)
 
 # GET - Return all courses [Student-5]
-@course_resource.route("/course", methods=["GET"])
+@course_resources.route("/course", methods=["GET"])
 def get_courses():
     """Get all courses, optionally filtered by department"""
     try:
@@ -39,7 +39,7 @@ def get_courses():
         return jsonify({"error": str(e)}), 500
 
 # POST - create a new course [Professor-5]
-@course_resource.route("/course", methods=["POST"])
+@course_resources.route("/course", methods=["POST"])
 def create_course():
    """Create a new course"""
    try:
@@ -77,7 +77,7 @@ def create_course():
 
 
 # GET - Return course details [Student-5]
-@course_resource.route("/course/<int:crn>", methods=["GET"])
+@course_resources.route("/course/<int:crn>", methods=["GET"])
 def get_course_details(crn):
    """Get detailed information about a specific course"""
    try:
@@ -98,7 +98,7 @@ def get_course_details(crn):
        return jsonify({"error": str(e)}), 500
 
 # GET - Get enrollments for a course [TA-1]
-@course_resource.route("/course/<int:crn>/enrollments", methods=["GET"])
+@course_resources.route("/course/<int:crn>/enrollments", methods=["GET"])
 def get_course_enrollments(crn):
    """Get all students enrolled in a specific course"""
    try:
@@ -124,7 +124,7 @@ def get_course_enrollments(crn):
        return jsonify({"error": str(e)}), 500
 
 # POST - Enroll a student in a course [TA-1]
-@course_resource.route("/course/<int:crn>/enrollments", methods=["POST"])
+@course_resources.route("/course/<int:crn>/enrollments", methods=["POST"])
 def enroll_student_in_course(crn):
     """Enroll a student in a specific course"""
     try:
@@ -174,7 +174,7 @@ def enroll_student_in_course(crn):
          return jsonify({"error": str(e)}), 500
 
 # DELETE - Remove a student enrollment from a course [TA-1]
-@course_resource.route("/course/<int:crn>/enrollments", methods=["DELETE"])
+@course_resources.route("/course/<int:crn>/enrollments", methods=["DELETE"])
 def remove_student_enrollment(crn):
     """Remove a student's enrollment from a course"""
     try:
@@ -213,7 +213,7 @@ def remove_student_enrollment(crn):
 
 
 # GET - Return materials for a course [Student-2] [Tutor-3]
-@course_resource.route("/resource", methods=["GET"])
+@course_resources.route("/resources", methods=["GET"])
 def get_resources():
    """Get all resources, optionally filtered by course CRN"""
    try:
@@ -244,7 +244,7 @@ def get_resources():
        return jsonify({"error": str(e)}), 500
 
 # # GET - Get specific resource details
-# @course_resource.route("/resource/<int:resource_id>", methods=["GET"])
+# @course_resources.route("/resources/<int:resource_id>", methods=["GET"])
 # def get_resource_details(resource_id):
 #    """Get details of a specific resource"""
 #    try:
@@ -262,7 +262,7 @@ def get_resources():
 #        return jsonify({"error": str(e)}), 500
 
 # POST - Upload material for a course [Student-2], [Professor-2], [Tutor-5]
-@course_resource.route("/resource", methods=["POST"])
+@course_resources.route("/resources", methods=["POST"])
 def upload_resource():
    """Upload a new course resource"""
    try:
@@ -301,7 +301,7 @@ def upload_resource():
        return jsonify({"error": str(e)}), 500
 
 # PUT - Update details for a course material [Student-2], [Professor-4]
-@course_resource.route("/resource/<int:resource_id>", methods=["PUT"])
+@course_resources.route("/resources/<int:resource_id>", methods=["PUT"])
 def update_resource(resource_id):
    """Update an existing resource"""
    try:
@@ -339,7 +339,7 @@ def update_resource(resource_id):
        return jsonify({"error": str(e)}), 500
 
 # DELETE - Remove a previously uploaded material [Student-2]
-@course_resource.route("/resource/<int:resource_id>", methods=["DELETE"])
+@course_resources.route("/resources/<int:resource_id>", methods=["DELETE"])
 def delete_resource(resource_id):
    """Delete a resource"""
    try:
@@ -359,7 +359,7 @@ def delete_resource(resource_id):
        return jsonify({"error": str(e)}), 500
 
 # GET - See topics that are available [Student-5]
-@course_resource.route("/topic", methods=["GET"])
+@course_resources.route("/topic", methods=["GET"])
 def get_topics():
    """Get all topics, optionally filtered by course CRN"""
    try:
@@ -386,7 +386,7 @@ def get_topics():
        return jsonify({"error": str(e)}), 500
 
 # PUT - Update topic details [TA-2]
-@course_resource.route("/topic/<int:topic_id>", methods=["PUT"])
+@course_resources.route("/topic/<int:topic_id>", methods=["PUT"])
 def update_topic(topic_id):
    """Update an existing topic"""
    try:
