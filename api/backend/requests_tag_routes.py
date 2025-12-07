@@ -150,7 +150,36 @@ def get_session_request_details(request_id):
     except Error as e: 
         return jsonify({"error" : str(e)}), 500
 
-# PUT: Approve/assign specific a session request [TA-6]
+# PUT: /session_requests/{requestID} - Approve/assign specific a session request [TA-6]
+@requests_tags.route("/session_requests/<int:request_id>", methods=["PUT"])
+def approve_session_request(request_id):
+    """ 
+    Approve or assign a session reuqest [TA-6]
+    Updates the status to Approved or Completed
+    """
+    try:
+        data = request.get_json()
+        #if proper status isn't there
+        if "status" not in data:
+            return jsonify({"error": "Missing required field: status"}), 400
+        
+        cursor = db.get_db().cursor()
 
+        #check request
+        cursor.execute("SELECT * FROM SessionRequest WHERE requestID = %s", (request_id,))
+        if not cursor.fetchone():
+            return jsonify({"error":"Session request not found"}), 404
+        
+        query = "UPDATE SessionRequest SET status = %s WHERE requestID = %s"
+        cursor.execute(query, (data["status"], request_id))
+
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message": "Session request approved successfully"}), 200
+
+    except Error as e:
+        return jsonify({"error" : str(e)}), 500
+            
 
 # DELETE: Reject a session request [TA-6]
