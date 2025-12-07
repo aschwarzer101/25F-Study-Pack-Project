@@ -212,3 +212,42 @@ def reject_sessions_request(request_id):
         return jsonify({"Message": "request rejected and deleted successfully"})
     except Error as e:
         return jsonify({"error": str(e)}), 500
+
+
+### TAGS RELATED ROUTES ===================================
+
+# GET /tags - View and search tags [TA-6]
+# Can filter by name to find similar tags
+# example doing "Git Help" = "Git"
+@requests_tags.route("/tags", methods=["GET"])
+def get_tags():
+    """
+    View and search tags [TA- 6]
+    Can search by partial tagName to find duplicates
+    """
+    try: 
+        current_app.logger.info('starting get_tags request')
+        cursor = db.get_db().cursor()
+
+        #search param for filtering
+        search = request.args.get("search")
+        #base query
+        query = "SELECT * FROM Tag WHERE 1=1"
+        params= []
+        # add filter (for finding similar tags)
+
+        if search:
+            query += " AND tagName LIKE %s"
+            params.append(f"%{search}%")
+        query += " ORDER BY tagName"
+        current_app.logger.debug(f'Executing query: {query} with params: {params}')
+        cursor.execute(query, params)
+        tags = cursor.fetchall()
+        cursor.close()
+
+        current_app.logger.info(f'retreived {len(tags)} tags')
+        return jsonify(tags), 200
+    except Error as e:  
+        current_app.logger.error(f'Database error with get_tags: {str(e)}')
+        return jsonify({"error": str(e)}), 500
+
