@@ -182,4 +182,33 @@ def approve_session_request(request_id):
         return jsonify({"error" : str(e)}), 500
             
 
-# DELETE: Reject a session request [TA-6]
+# DELETE: /session_requests/{requestID} - Reject session request [TA-6] - Reject a session request [TA-6]
+@requests_tags.route("/session_requests/<int:request_id>", methods=["DELETE"])
+def reject_sessions_request(request_id):
+    """
+    Reject a session request [TA-6]
+    Deletes the request and all associated data
+    """
+    try:
+        cursor = db.get_db().cursor()
+
+        #Check if request exists
+        cursor.execute("SELECT * FROM SessionRequest WHERE requestID = %s", (request_id,))
+        if not cursor.fetchone():
+            return jsonify({"error": "Session request not found"}), 404
+        
+        #Delete Request_tags entries first due to FK contrants
+        cursor.execute("DELETE FROM Request_Tags WHERE requestID = %s", (request_id,))
+
+        #then delete from requesting_students entries ""
+
+        cursor.execute("DELETE FROM Requesting_Students WHERE requestID = %s", (request_id,))
+        #delete session requesst itself
+        cursor.execute("DELETE FROM SessionRequest WHERE requestID = %s", (request_id,))
+
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"Message": "request rejected and deleted successfully"})
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
