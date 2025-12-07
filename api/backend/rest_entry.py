@@ -1,4 +1,3 @@
-from api.backend import person_assignment_routes
 from flask import Flask
 from dotenv import load_dotenv
 import os
@@ -8,12 +7,11 @@ from logging.handlers import RotatingFileHandler
 from backend.db_connection import db
 from backend.simple.simple_routes import simple_routes
 from backend.ngos.ngo_routes import ngos
-from api.backend.student_management_routes import student_management
-from api.backend.course_resourse_routes import course_resources
-from api.backend.session_info_routes import session_info
-from api.backend.requests_tag_routes import requests_tags
-from api.backend.person_assignment_routes import person_assignment
-from backend.student_routes import students 
+from backend.student_management_routes import student_management
+from backend.course_resourse_routes import course_resources
+from backend.session_info_routes import session_info
+from backend.requests_tag_routes import requests_tags
+from backend.person_assignment_routes import person_assignment
 
 def create_app():
     app = Flask(__name__)
@@ -58,9 +56,9 @@ def create_app():
     app.register_blueprint(ngos, url_prefix="/ngo")
     app.register_blueprint(student_management, url_prefix="/sm")
     app.register_blueprint(course_resources, url_prefix="/cr")
-    app.register_blueprint(session_info, url_prefix="si")
-    app.register_blueprint(requests_tags, url_prefix="rt")
-    app.register_blueprint(person_assignment, url_prefix="pa")
+    app.register_blueprint(session_info, url_prefix="/si")
+    app.register_blueprint(requests_tags, url_prefix="/rt")
+    app.register_blueprint(person_assignment, url_prefix="/pa")
     # Don't forget to return the app object
     return app
 

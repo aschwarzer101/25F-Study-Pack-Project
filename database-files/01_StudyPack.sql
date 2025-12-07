@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS `Study-Pack`;
-CREATE DATABASE IF NOT EXISTS `Study-Pack`;
+DROP DATABASE IF EXISTS `StudyPack`;
+CREATE DATABASE IF NOT EXISTS `StudyPack`;
 
 
-USE `Study-Pack`;
+USE `StudyPack`;
 
 
 DROP TABLE IF EXISTS Professor;
