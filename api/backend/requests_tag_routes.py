@@ -109,9 +109,46 @@ def get_session_requests():
         current_app.logger.error(f'db error in get_session_requests: {str(e)}')
         return jsonify({"error": str(e)}), 500
 
-# GET the students who submitted a request [TA-6] [Tutor-6]
 
+# GET /session_requests/{requestID} - Get students who submitted a request [TA-6] [Tutor-6]
+@requests_tags.route("/session_requests/<int:request_id>", methods=["GET"])
+def get_session_request_details(request_id):
+    """
+    Get detailed information about a specific session request. Returns all students who 
+    submitted this request and the associated tags
+    """
+    try:
+        cursor = db.get_db().cursor()
 
+        #GET request with students and tags
+        query = """
+        SELECT 
+            sr.requestID,
+            sr.dateCreated,
+            sr.status,
+            GROUP_CONCAT(s.nuID) AS studentIDs,
+            GROUP_CONCAT(s.email) AS studentEmails, 
+            GROUP_CONCAT(s.firstName) AS studentFirstNames,
+            GROUP_CONCAT(s.lastName) AS studentLastNames,
+            GROUP_CONCAT(t.tagName) AS tags
+        FROM SessionRequest sr
+        JOIN Requesting_Students rs ON sr.requestID = rs.requestID
+        JOIN Student s ON rs.nuID = s.nuID
+        LEFT JOIN Request_Tags rt ON sr.requestID = rt.requestID
+        LEFT JOIN Tag t on rt.tagID = t.tagID
+        WHERE sr.requestID = %s
+        GROUP BY sr.requestID
+        """
+
+        cursor.execute(query, (request_id,))
+        results = cursor.fetchall()
+
+        if not results:
+            return jsonify({"error": "Session request not found"}), 404
+        cursor.close()
+        return jsonify(results), 200
+    except Error as e: 
+        return jsonify({"error" : str(e)}), 500
 
 # PUT: Approve/assign specific a session request [TA-6]
 
