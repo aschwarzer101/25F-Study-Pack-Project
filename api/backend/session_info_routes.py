@@ -4,7 +4,7 @@ from mysql.connector import Error
 from flask import current_app
 
 
-session_info = Blueprint("session info", __name__)
+session_info = Blueprint("session_info", __name__)
 
 # # Get all study locations with optional filtering by status/building
 # # (example checking status of rooms in Snell)
