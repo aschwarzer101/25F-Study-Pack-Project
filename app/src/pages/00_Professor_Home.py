@@ -9,17 +9,22 @@ st.set_page_config(layout = 'wide')
 # Show appropriate sidebar links for the role of the currently logged in user
 SideBarLinks()
 
-st.title(f"Welcome Political Strategist, {st.session_state['first_name']}.")
+st.title(f"Welcome Professor, {st.session_state['first_name']}!")
 st.write('')
 st.write('')
 st.write('### What would you like to do today?')
 
-if st.button('View World Bank Data Visualization', 
+if st.button('Manange Course Materials', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/01_World_Bank_Viz.py')
+  st.switch_page('pages/01_Professor_Course_Materials.py')
 
-if st.button('View World Map Demo', 
+if st.button('View Student Analytics Dashboard', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/02_Map_Demo.py')
+  st.switch_page('pages/02_Student_Analytics_Dashboard.py')
+
+if st.button('Create New Course', 
+             type='primary',
+             use_container_width=True):
+  st.switch_page('pages/03_Create_New_Course.py')
