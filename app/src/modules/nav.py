@@ -35,21 +35,19 @@ def MapDemoNav():
 
 def TAAdminHomeNav():
     st.sidebar.page_link(
-      "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon="🏠"
+      "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon=":material/home:"
     )
 
 def StudentDirectoryNav():
-    st.sidebar.page_link("pages/14_Student_Directory.py", label="Student Directory", icon="📁")
+    st.sidebar.page_link("pages/14_Student_Directory.py", label="Student Directory", icon=":material/recent_actors:")
 
-def AddNgoNav():
-    st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon="➕")
+def SessionRequests():
+    st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon=":material/person_raised_hand:")
 
-def ApiTestNav():
-    st.sidebar.page_link("pages/12_API_Test.py", label="Test the API", icon="🛜")
 
-def PredictionNav():
+def LocationManagement():
     st.sidebar.page_link(
-        "pages/11_Location_Management.py", label="Location Management", icon="📈"
+        "pages/11_Location_Management.py", label="Location Management", icon=":material/apartment:"
     )
 
 def ClassificationNav():
@@ -100,18 +98,17 @@ def SideBarLinks(show_home=False):
         if st.session_state["role"] == "ta_admin":
             TAAdminHomeNav()
             StudentDirectoryNav()
-            AddNgoNav()
-            PredictionNav()
-            ApiTestNav()
-            ClassificationNav()
+            SessionRequests()
+            LocationManagement()
+            
             
 
         # If the user is an administrator, give them access to the administrator pages
         if st.session_state["role"] == "tutor":
             TutorHomeNav()
 
-    # Always show the About page at the bottom of the list of links
-    AboutPageNav()
+    # # Always show the About page at the bottom of the list of links
+    # AboutPageNav()
 
     if st.session_state["authenticated"]:
         # Always show a logout button if there is a logged in user

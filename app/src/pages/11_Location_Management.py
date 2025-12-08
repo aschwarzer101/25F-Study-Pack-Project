@@ -1,6 +1,4 @@
-# import logging
 
-# logger = logging.getLogger(__name__)
 
 import streamlit as st
 from modules.nav import SideBarLinks
@@ -36,7 +34,7 @@ with loc_tab1:
         )
     with col2:
         st.write("") 
-        refresh_locations = st.button("🔄 Refresh", key="refresh_locations", use_container_width=True)
+        refresh_locations = st.button(":material/refresh: Refresh", key="refresh_locations", use_container_width=True)
     #get locations
         # building_filter = st.selectbox(
         #     "Filter by Building",
