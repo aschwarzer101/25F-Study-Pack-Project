@@ -122,7 +122,7 @@ create table ProjectGroup_Student
 drop table if exists Resource;
 create table Resource
 (
-   resourceID   int                                                        not null PRIMARY KEY,
+   resourceID   int                                                        not null PRIMARY KEY AUTO_INCREMENT,
    name         varchar(100)                                               not null,
    type         ENUM ('PDF', 'Textbook', 'Video', 'URL', 'Image', 'Other') not null,
    dateUploaded DATE                                                       not null,
@@ -172,7 +172,7 @@ CREATE TABLE StudyLocation
 DROP TABLE IF EXISTS TA_Uploads_Resource;
 CREATE TABLE TA_Uploads_Resource
 (
-   resourceID INT NOT NULL,
+   resourceID INT NOT NULL AUTO_INCREMENT,
    taID       INT NOT NULL,
 
 
@@ -282,7 +282,7 @@ CREATE TABLE Request_Tags
 DROP TABLE IF EXISTS Student_Uploads_Resource;
 CREATE TABLE Student_Uploads_Resource
 (
-   resourceID INT NOT NULL,
+   resourceID INT NOT NULL AUTO_INCREMENT,
    studentID  INT NOT NULL,
    FOREIGN KEY (resourceID) REFERENCES Resource (resourceID)
        ON UPDATE CASCADE
