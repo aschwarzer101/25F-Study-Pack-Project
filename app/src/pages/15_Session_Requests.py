@@ -105,9 +105,9 @@ if refresh_requests or status_filter:
                         with col2:
                             
                             if req['status'] == 'Pending':
-                                st.badge("Pending", color="yellow", width="content")
+                                st.badge("Pending", icon=":material/hourglass:", color="yellow", width="content")
                             elif req['status'] == 'Approved':
-                                st.badge("Approved", color="green", width="content")
+                                st.badge("Approved", icon =":material/thumb_up:", color="green", width="content")
                             elif req['status'] == 'Completed':
                                 st.badge("Completed", color="gray", width="content")
                             
@@ -123,7 +123,8 @@ if refresh_requests or status_filter:
                         with col3:
                             #action buttons
                             if req['status'] == 'Pending':
-                                if st.button("✅ Approve", key=f"approve_{req['requestID']}", use_container_width=True, type="primary"):
+                                if st.button("Approve", key=f"approve_{req['requestID']}", use_container_width=True, type="primary", 
+                                             icon = ":material/check:"):
                                     try:
                                         approve_response = requests.put(
                                             f"{API_URL}/rt/session_requests/{req['requestID']}",
@@ -137,7 +138,8 @@ if refresh_requests or status_filter:
                                     except Exception as e:
                                         st.error(f"Error: {str(e)}")
                                 
-                                if st.button("❌ Reject", key=f"reject_{req['requestID']}", use_container_width=True):
+                                if st.button(" Reject", key=f"reject_{req['requestID']}", use_container_width=True, 
+                                             icon = ":material/close:"):
                                     try:
                                         delete_response = requests.delete(
                                             f"{API_URL}/rt/session_requests/{req['requestID']}"
@@ -152,10 +154,10 @@ if refresh_requests or status_filter:
                         
                         # Student names
                         if req.get('studentFirstNames'):
-                            st.write(f"**👥 Requesting Students:** {req['studentFirstNames']}")
+                            st.write(f"** Requesting Students:** {req['studentFirstNames']}")
                         
                         #more info/details button
-                        if st.button("🔍 View Details", key=f"details_{req['requestID']}"):
+                        if st.button(" View Details", key=f"details_{req['requestID']},", icon = ":material/search_gear:"):
                             try:
                                 detail_response = requests.get(f"{API_URL}/rt/session_requests/{req['requestID']}")
                                 if detail_response.status_code == 200:

@@ -44,7 +44,7 @@ session_info = Blueprint("session_info", __name__)
 #     except Error as e: 
 #         current_app.logger.error(f'error in getting locations alayna : {str(e)}')
 #         return jsonify({"error" : str(e)}), 500
-    
+
 # GET - Return locations of active study sessions [Student-4] [Tutor-1]
 @session_info.route("/study_location", methods=["GET"])
 def get_study_locations():
@@ -170,6 +170,7 @@ def create_study_location():
         current_app.logger.error(f'Database error: {str(e)}')
         return jsonify({"error": str(e)}), 500
 
+
 # GET - Return all active study sessions [Student-4] [Tutor-1]
 @session_info.route("/study_session", methods=["GET"])
 def get_study_sessions():
@@ -191,6 +192,14 @@ def get_study_sessions():
       
        params = []
        where_clauses = ["ss.date >= CURDATE()"]
+        # from alayna : trying to change this since query wasn't actually running anything
+       if where_clauses:
+           query += " WHERE" + "AND".join(where_clauses)
+        
+       query += " ORDER BY ss.date, ss.startTime"
+       cursor.execute(query, params)
+       sessions = cursor.fetchall()
+       cursor.close()
       
        current_app.logger.info(f'Retrieved {len(sessions)} study sessions')
        return jsonify(sessions), 200
@@ -335,3 +344,43 @@ def delete_study_session(session_id):
    except Error as e:
        return jsonify({"error": str(e)}), 500
 
+
+# JUST FOR FRONT END FUNCTIONALITY - Adding in PUT endpoint for updating 
+# study_location/{loc_id}
+
+@session_info.route("/study_location/<int:loc_id>", methods=["PUT"])
+def update_study_location(loc_id): 
+    """Update existing location"""
+    try: 
+        current_app.logger.info(f'Updating study location {loc_id}')
+        data = request.get_json()
+        cursor = db.get_db().cursor()
+        #check location exists
+        cursor.execute("SELECT * FROM StudyLocation WHERE locID = %s", (loc_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({"error": "location not found"}), 404
+        
+        #query
+        update_fields = []
+        params = []
+        allowed_fields = ["status", "capacity", "room", "building"]
+        for field in allowed_fields:
+            if field in data:
+                update_fields.append(f"{field} = %s")
+                params.append(data[field])
+        if not update_fields:
+            cursor.close()
+            return jsonify({"error": "No valid fields to update"}),        
+        params.append(loc_id)
+        query = f"UPDATE StudyLocation SET {', '.join(update_fields)} WHERE locID = %s"
+        
+        cursor.execute(query, params)
+        db.get_db().commit()
+        cursor.close()
+        
+        current_app.logger.info(f'Updated loc {loc_id}')
+        return jsonify({"message": "location updated"}), 200
+    except Error as e:
+        current_app.logger.error(f'Database error: {str(e)}')
+        return jsonify({"error": str(e)}), 500
