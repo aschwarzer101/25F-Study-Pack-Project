@@ -6,28 +6,15 @@
 
 ## 📖 About StudyPack
 
-StudyPack is a comprehensive web application designed to enhance the academic experience at Northeastern University by consolidating study resources, facilitating peer collaboration, and streamlining coordination between students, peer tutors, teaching assistants, and professors.
+StudyPack consolidates study resources, facilitates peer collaboration, and streamlines coordination between students, peer tutors, teaching assistants, and professors at Northeastern University.
 
-### The Problem We're Solving
+**The Problem**: Students struggle with scattered resources across multiple platforms, difficult study session coordination, and fragmented communication with teaching staff.
 
-Students currently face:
-- Scattered resources across multiple platforms
-- Difficulty organizing study sessions with peers
-- Limited visibility into available tutoring and TA support
-- Fragmented communication channels for academic help
-
-### Our Solution
-
-StudyPack provides:
-- **Centralized Resource Hub**: All course materials in one place
-- **Study Session Discovery**: Find and join active study sessions across campus
-- **Smart Request Management**: Students can request help, TAs can efficiently respond
-- **Peer Tutoring Network**: Connect with peer tutors and teaching assistants
-- **Location Management**: Track available study spaces in real-time
+**Our Solution**: One centralized platform for discovering study sessions, accessing course materials, requesting help, and managing academic resources.
 
 ---
 
-## 👥 Team: Pawgrammers
+##  Team: Pawgrammers
 
 - **Alayna Schwarzer** - schwarzer.a@northeastern.edu
 - **Nancy Guan** - guan.na@northeastern.edu
@@ -36,59 +23,21 @@ StudyPack provides:
 
 ---
 
-## 🏗️ Project Architecture
-
-### Technology Stack
-
-- **Backend**: Flask REST API (Python)
-- **Frontend**: Streamlit
-- **Database**: MySQL 8.0
-- **Containerization**: Docker & Docker Compose
-- **Version Control**: Git/GitHub
-
-### System Components
-
-```
-StudyPack/
-├── api/                    # Flask REST API
-│   └── backend/
-│       ├── student_management_routes.py
-│       ├── course_resource_routes.py
-│       ├── session_info_routes.py
-│       ├── request_tag_routes.py
-│       ├── person_assignment_routes.py
-│       └── rest_entry.py
-├── app/                    # Streamlit UI
-│   └── src/
-│       ├── Home.py
-│       └── pages/
-├── database-files/         # SQL schema and mock data
-└── docker-compose.yaml
-```
-
----
-
-## 🚀 Getting Started
+##  Quick Start
 
 ### Prerequisites
+- Docker Desktop
+- Git
 
-- Docker Desktop installed and running
-- Git installed
-- Text editor (VS Code recommended)
+### Setup
 
-### Setup Instructions
-
-#### 1. Clone the Repository
-
+1. **Clone the repository**
 ```bash
 git clone https://github.com/aschwarzer101/25F-Study-Pack-Project.git
 cd 25F-Study-Pack-Project
 ```
 
-#### 2. Create Environment File
-
-Create a `.env` file in the project root directory with the following configuration:
-
+2. **Create `.env` file** in project root:
 ```env
 SECRET_KEY=your_secret_key_here
 DB_USER=root
@@ -98,222 +47,190 @@ DB_PORT=3306
 DB_NAME=StudyPack
 ```
 
-**Important Notes:**
-- Replace `your_secret_key_here` with a secure random string
-- Replace `your_password_here` with your MySQL root password
-- Do **NOT** commit the `.env` file to Git (it's in `.gitignore`)
-
-#### 3. Start Docker Containers
-
+3. **Start the application**
 ```bash
-# Start all services (database, API, and Streamlit app)
 docker compose up -d
-
-# Wait 10-15 seconds for MySQL to fully initialize
 ```
 
-#### 4. Verify Services Are Running
-
-```bash
-# Check all containers are running
-docker ps
-
-# You should see three containers:
-# - mysql_db (MySQL database)
-# - api (Flask REST API)
-# - app (Streamlit frontend)
-```
-
-#### 5. Access the Application
-
+4. **Access the application**
 - **Streamlit UI**: http://localhost:8501
-- **API Documentation**: http://localhost:4000
-- **Database**: localhost:3200 (use DataGrip or MySQL Workbench)
+- **REST API**: http://localhost:4000
+- **Database**: localhost:3200
 
-### Rebuilding After Database Changes
-
-If you modify SQL files in `database-files/`:
+### Rebuilding After Changes
 
 ```bash
-# Stop and remove containers
 docker compose down -v
-
-# Recreate containers (executes SQL files)
 docker compose up -d
 ```
 
 ---
 
-## 🎯 User Personas & Features
+## Key Features by User Role
 
-### 👩‍🏫 Professor (Anna Smith)
-**Role**: Data Admin & Content Manager
+###  Professor
+- Upload and manage course materials
+- Track student study patterns by topic
+- Create courses and update resources
+- View student engagement analytics
 
-**Key Features**:
-- Upload and manage course materials (videos, PDFs, images)
-- Track which topics students are studying
-- Analyze time students spend on each topic
-- Create new courses and update resources
-
-### 👨‍💼 TA Admin (Gabby Gutierrez)
-**Role**: System Administrator
-
-**Key Features**:
+###  TA Admin
 - Manage student enrollments and course sections
-- Assign TAs to study sessions
 - Approve/reject study session requests
-- Manage study locations (add, edit, deactivate)
-- Post announcements to students
+- Assign TAs to study sessions
+- Manage study locations
 - Consolidate duplicate request tags
+- Post announcements
 
-### 👨‍🎓 Student (Jean-Baptiste Clamence)
-**Role**: Primary User
-
-**Key Features**:
-- Discover and join active study sessions
-- Create study session requests
+###  Student
+- Find and join active study sessions
+- Create help requests
 - Upload and access course materials
 - Contact TAs and peer tutors
-- Search for courses and resources
-- Communicate with group members
+- Search courses and resources
 
-### 👨‍🏫 Peer Tutor (John Adams)
-**Role**: Student Helper
-
-**Key Features**:
-- View study sessions requesting tutors
+###  Peer Tutor
+- View sessions requesting tutors
 - Filter sessions by course/topic
-- Access course materials for tutoring prep
-- Upload helpful study resources
-- See common help requests to organize group sessions
-- Contact students for coordination
+- Access course materials
+- Upload study resources
+- Organize group tutoring sessions
 
 ---
 
-## Prerequisites
+## API Structure
 
-- A GitHub Account
-- A terminal-based git client or GUI Git client such as GitHub Desktop or the Git plugin for VSCode.
-- A distribution of Python running on your laptop. The distribution supported by the course is [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://www.anaconda.com/docs/getting-started/miniconda/install).
-  - Create a new Python 3.11 environment in `conda` named `db-proj` by running:  
-     ```bash
-     conda create -n db-proj python=3.11
-     ```
-  - Install the Python dependencies listed in `api/requirements.txt` and `app/src/requirements.txt` into your local Python environment. You can do this by running `pip install -r requirements.txt` in each respective directory.
-     ```bash
-     cd api
-     pip install -r requirements.txt
-     cd ../app
-     pip install -r requirements.txt
-     ```
-     Note that the `..` means go to the parent folder of the folder you're currently in (which is `api/` after the first command)
-- VSCode with the Python Plugin installed
-  - You may use some other Python/code editor.  However, Course staff will only support VS Code. 
+Our REST API is organized into **5 blueprints** with **46 total routes**:
 
+### Blueprints
 
-## Structure of the Repo
+1. **Student Management** (`/sm`) - Student CRUD, peer tutor operations
+2. **Course Resources** (`/cr`) - Courses, enrollments, materials, topics
+3. **Session Info** (`/si`) - Study sessions and locations
+4. **Requests & Tags** (`/rt`) - Session requests and tag management
+5. **Personnel Assignment** (`/pa`) - TAs, admins, and assignments
 
-- This repository is organized into five main directories:
-  - `./app` - the Streamlit app
-  - `./api` - the Flask REST API
-  - `./database-files` - SQL scripts to initialize the MySQL database
-  - `./datasets` - folder for storing datasets
+### Example Endpoints
 
-- The repo also contains a `docker-compose.yaml` file that is used to set up the Docker containers for the front end app, the REST API, and MySQL database. 
+```bash
+# Students
+GET    /sm/students
+POST   /sm/students
+PUT    /sm/students/{nuID}
+DELETE /sm/students/{nuID}
 
-## Suggestion for Learning the Project Code Base
+# Session Requests
+GET    /rt/session_requests?status=Pending
+POST   /rt/session_requests
+PUT    /rt/session_requests/{requestID}
+DELETE /rt/session_requests/{requestID}
 
-If you are not familiar with web app development, this code base might be confusing. But don't worry, we'll get through it together. Here are some suggestions for learning the code base:
+# Study Sessions
+GET    /si/study_sessions
+POST   /si/study_sessions
+PUT    /si/study_sessions/{sessionID}
+DELETE /si/study_sessions/{sessionID}
+```
 
-1. Start by exploring the `./app` directory. This is where the Streamlit app is located. The Streamlit app is a Python-based web app that is used to interact with the user. It's a great way to build a simple web app without having to learn a lot of web development.
-1. Next, explore the `./api` directory. This is where the Flask REST API is located. The REST API is used to interact with the database and perform other server-side tasks. You might also consider this the "application logic" or "business logic" layer of your app. 
-1. Finally, explore the `./database-files` directory. This is where the SQL scripts are located that will be used to initialize the MySQL database.
-1. Bonus: If you want to have a totally separate copy of the Template Repo on your laptop that you can use to explore and try things without messing up your team repo, see *Setting Up a Personal Testing Repo (Optional)* section below. 
+See full API documentation in the code comments within each blueprint file.
 
-## Setting Up the Repos
-<details>
-<summary>Setting Up a Personal Testing Repo (Optional)</summary>
+---
 
-### Setting Up A Personal Sandbox Repo (This is Optional)
+##  Database
 
-**Before you start**: You need to have a GitHub account and a terminal-based git client or GUI Git client such as GitHub Desktop or the Git plugin for VSCode.
+**Database Name**: StudyPack  
+**Tables**: 15+ tables including Student, Course, StudySession, Resource, SessionRequest, and more  
+**Sample Data**: Generated using Mockaroo with realistic test data
 
-1. Clone this repo to your local machine.
-   1. You can do this by clicking the green "Code" button on the top right of the repo page and copying the URL. Then, in your terminal, run `git clone <URL>`.
-   1. Or, you can use the GitHub Desktop app to clone the repo. See [this page](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop) of the GitHub Desktop Docs for more info. 
-1. Open the repository folder in VSCode.
-1. Set up the `.env` file in the `api` folder based on the `.env.template` file.
-   1. Make a copy of the `.env.template` file and name it `.env`. 
-   1. Open the new `.env` file. 
-   1. On the last line, delete the `<...>` placeholder text, and put a password. Don't reuse any passwords you use for any other services (email, etc.) 
-1. For running the testing containers (for your personal repo), you will tell `docker compose` to use a different configuration file than the typical one.  The one you will use for testing is `sandbox.yaml`.
-   1. `docker compose -f sandbox.yaml up -d` to start all the containers in the background
-   1. `docker compose -f sandbox.yaml down` to shutdown and delete the containers
-   1. `docker compose -f sandbox.yaml up db -d` only start the database container (replace db with api or app for the other two services as needed)
-   1. `docker compose -f sandbox.yaml stop` to "turn off" the containers but not delete them.
-</details>
+For complete schema details, see our Phase 2 ER diagrams and DDL documentation.
 
-### Setting Up Your Team's Repo
+---
 
-**Before you start**: As a team, one person needs to assume the role of _Team Project Repo Owner_.
+## Streamlit Pages
 
-1. The Team Project Repo Owner needs to **fork** this template repo into their own GitHub account **and give the repo a name consistent with your project's name**. If you're worried that the repo is public, don't. Every team is doing a different project.
-1. In the newly forked team repo, the Team Project Repo Owner should go to the **Settings** tab, choose **Collaborators and Teams** on the left-side panel. Add each of your team members to the repository with Write access.
+### Structure
+- **Main Home**: User role selection (Professor, TA Admin, Student, Tutor)
+- **4 Home Pages**: One for each user role
+- **12+ Feature Pages**: 3 per user role covering core functionality
 
-**Remaining Team Members**
+### TA Admin Pages
+- Student & TA Management
+- Session Requests Dashboard  
+- Location Management
 
-1. Each of the other team members will receive an invitation to join.
-1. Once you have accepted the invitation, you should clone the Team's Project Repo to your local machine.
-1. Set up the `.env` file in the `api` folder based on the `.env.template` file.
-1. For running the testing containers (for your team's repo):
-   1. `docker compose up -d` to start all the containers in the background
-   1. `docker compose down` to shutdown and delete the containers
-   1. `docker compose up db -d` only start the database container (replace db with api or app for the other two services as needed)
-   1. `docker compose stop` to "turn off" the containers but not delete them.
+### Student Pages
+- Study Session Finder
+- Course Materials Browser
+- Create Session Request
 
-**Note:** You can also use the Docker Desktop GUI to start and stop the containers after the first initial run.
+### Additional Pages
+- Professor: Topic Analytics, Resource Management
+- Tutor: Available Sessions, Materials Access
 
-## Important Tips
+---
 
-1. In general, any changes you make to the api code base (REST API) or the Streamlit app code should be *hot reloaded* when the files are saved.  This means that the changes should be immediately available.  
-   1. Don't forget to hit click the **Always Rerun** button in the browser tab of the Streamlit app for it to reload with changes. 
-   1. Sometimes, a bug in the code will shut the containers down.  If this is the case, try and fix the bug in the code.  Then you can restart the `web-app` container in Docker Desktop or restart all the containers with `docker compose restart` (no *-d* flag). 
-1. The MySQL Container is different. 
-   1. When the MySQL container is ***created*** the first time, it will execute any `.sql` files in the `./database-files` folder. **Important:** it will execute them in alphabetical order.  
-   1. The MySQL Container's log files are your friend! Remember, you can access them in Docker Desktop by going to the MySQL Container, and clicking on the `Logs` tab.  If there are errors in your .sql files as it is trying to run them, there will be a message in the logs. You can search 🔍 for `Error` to find them more quickly. 
-   1. If you need to update anything in any of your SQL files, you **MUST** recreate the MySQL container (rather than just stopping and restarting it).  You can recreate the MySQL container by using the following command: `docker compose down db -v && docker compose up db -d`. 
-      1. `docker compose down db -v` stops and deletes the MySQL container and the volume attached to it. 
-      1. `docker compose up db -d` will create a new db container and re-run the files in the `database-files` folder. 
+##  Testing
 
-## Handling User Role Access and Control
+### Test API
+```bash
+# Test connection
+curl http://localhost:4000/
 
-In most applications, when a user logs in, they assume a particular role in the app. For instance, when one logs in to a stock price prediction app, they may be a single investor, a portfolio manager, or a corporate executive (of a publicly traded company). Each of those _roles_ will likely present some similar features as well as some different features when compared to the other roles. So, how do you accomplish this in Streamlit? This is sometimes called Role-based Access Control, or **RBAC** for short.
+# Get all students
+curl http://localhost:4000/sm/students
 
-The code in this project demonstrates how to implement a simple RBAC system in Streamlit but without actually using user authentication (usernames and passwords). The Streamlit pages from the original template repo are split up among 3 roles - Political Strategist, USAID Worker, and a System Administrator role (this is used for any sort of system tasks such as re-training ML model, etc.). It also demonstrates how to deploy an ML model.
+# Get pending requests
+curl http://localhost:4000/rt/session_requests?status=Pending
+```
 
-Wrapping your head around this will take a little time and exploration of this code base. Some highlights are below.
+### Test Database
+```bash
+# Connect to MySQL
+docker exec -it <mysql-container-name> mysql -u root -p
 
-### Getting Started with the RBAC
+# Verify data
+USE StudyPack;
+SHOW TABLES;
+SELECT * FROM Student LIMIT 5;
+```
 
-1. We need to turn off the standard panel of links on the left side of the Streamlit app. This is done through the `app/src/.streamlit/config.toml` file. So check that out. We are turning it off so we can control directly what links are shown.
-1. Then I created a new python module in `app/src/modules/nav.py`. When you look at the file, you will se that there are functions for basically each page of the application. The `st.sidebar.page_link(...)` adds a single link to the sidebar. We have a separate function for each page so that we can organize the links/pages by role.
-1. Next, check out the `app/src/Home.py` file. Notice that there are 3 buttons added to the page and when one is clicked, it redirects via `st.switch_page(...)` to that Roles Home page in `app/src/pages`. But before the redirect, I set a few different variables in the Streamlit `session_state` object to track role, first name of the user, and that the user is now authenticated.
-1. Notice near the top of `app/src/Home.py` and all other pages, there is a call to `SideBarLinks(...)` from the `app/src/nav.py` module. This is the function that will use the role set in `session_state` to determine what links to show the user in the sidebar.
-1. The pages are organized by Role. Pages that start with a `0` are related to the _Political Strategist_ role. Pages that start with a `1` are related to the _USAID worker_ role. And, pages that start with a `2` are related to The _System Administrator_ role.
+---
 
+##  Common Issues
 
-## (Completely Optional) Incorporating ML Models into your Project
+**Containers won't start**: Check Docker Desktop is running, try `docker compose build`
 
-_Note_: This project only contains the infrastructure for a hypothetical ML model.
+**Database connection failed**: Verify `.env` has `DB_NAME=StudyPack` and `DB_HOST=mysql_db`
 
-1. Collect and preprocess necessary datasets for your ML models.
-1. Build, train, and test your ML model in a Jupyter Notebook.
-   - You can store your datasets in the `datasets` folder. You can also store your Jupyter Notebook in the `ml-src` folder.
-1. Once your team is happy with the model's performance, convert your Jupyter Notebook code for the ML model to a pure Python script.
-   - You can include the `training` and `testing` functionality as well as the `prediction` functionality.
-   - Develop and test this pure Python script first in the `ml-src` folder.
-   - You may or may not need to include data cleaning, though.
-1. Review the `api/backend/ml_models` module. In this folder,
-   - We've put a sample (read _fake_) ML model in the `model01.py` file. The `predict` function will be called by the Flask REST API to perform '_real-time_' prediction based on model parameter values that are stored in the database. **Important**: you would never want to hard code the model parameter weights directly in the prediction function.
-1. The prediction route for the REST API is in `api/backend/customers/customer_routes.py`. Basically, it accepts two URL parameters and passes them to the `prediction` function in the `ml_models` module. The `prediction` route/function packages up the value(s) it receives from the model's `predict` function and send its back to Streamlit as JSON.
-1. Back in streamlit, check out `app/src/pages/11_Prediction.py`. Here, I create two numeric input fields. When the button is pressed, it makes a request to the REST API URL `/c/prediction/.../...` function and passes the values from the two inputs as URL parameters. It gets back the results from the route and displays them. Nothing fancy here.
+**API returns 404**: Check blueprint is registered in `rest_entry.py` with correct prefix
+
+**Changes not reflecting**: Recreate containers with `docker compose down -v && docker compose up -d`
+
+---
+
+##  Demo Video
+
+[Link to be added after recording]
+
+---
+
+##  Project Documentation
+
+This project was developed in three phases:
+- **Phase 1**: User personas, stories, and wireframes
+- **Phase 2**: ER diagrams, database design, and SQL implementation
+- **Phase 3**: REST API, Streamlit UI, and full-stack integration
+
+---
+
+##  Acknowledgments
+
+**CS 3200 - Database Design**  
+**Fall 2025**  
+**Northeastern University Khoury College of Computer Sciences**
+
+Special thanks to Professor Mark Fontenot and the CS 3200 teaching staff.
+
+---
+
+**Built with ❤️ by Team Pawgrammers** 🐾
