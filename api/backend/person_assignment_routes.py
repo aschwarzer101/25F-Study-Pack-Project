@@ -6,6 +6,32 @@ from flask import current_app
 
 person_assignment = Blueprint("person_assignment", __name__)
 
+# GET /teaching_assistants - Get TAs for a course [Student-3] [TA-2]
+@person_assignment.route("/teaching_assistants", methods=["GET"])
+def get_teaching_assistants():
+    """Get all teaching assistants, can filter by course"""
+    try:
+        cursor = db.get_db().cursor()
+        
+        crn = request.args.get("crn")
+        
+        query = "SELECT * FROM TeachingAssistant WHERE 1=1"
+        params = []
+        
+        if crn:
+            query += " AND crn = %s"
+            params.append(crn)
+        
+        query += " ORDER BY lastName, firstName"
+        
+        cursor.execute(query, params)
+        tas = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(tas), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
 # GET - Return a teaching assistant's information [Student-3] [TA-2]
 @person_assignment.route("/teaching_assistant/<int:ta_nuid>", methods=["GET"])
 def get_ta_info(ta_nuid):
