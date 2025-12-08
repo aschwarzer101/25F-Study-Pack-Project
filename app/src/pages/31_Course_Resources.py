@@ -180,7 +180,6 @@ with resource_tab2:
                 max_value=99999,
                 value=12345,
                 step=1,
-                help="Which course is this resource for?"
             )
         
         with col2:
