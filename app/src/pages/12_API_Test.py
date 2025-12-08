@@ -26,3 +26,4 @@ st.write("# Accessing a REST API from Within Streamlit")
 #   data = {"a":{"b": "123", "c": "hello"}, "z": {"b": "456", "c": "goodbye"}}
 
 # st.dataframe(data)
+

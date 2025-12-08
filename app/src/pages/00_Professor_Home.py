@@ -22,7 +22,7 @@ if st.button('Manange Course Materials',
 if st.button('View Student Analytics Dashboard', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/02_Student_Analytics_Dashboard.py')
+  st.switch_page('pages/02_Professor_Student_Analytics.py')
 
 if st.button('Create New Course', 
              type='primary',

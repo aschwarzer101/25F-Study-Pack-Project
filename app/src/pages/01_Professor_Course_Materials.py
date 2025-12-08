@@ -13,24 +13,29 @@ import requests
 # Call the SideBarLinks from the nav module in the modules directory
 SideBarLinks()
 
-
 # set the header of the page
 st.header('Course Materials Management')
 
 # You can access the session state to make a more customized/personalized app experience
 st.write(f"### Hi, {st.session_state['first_name']}.")
 
-# select a course from the list of courses retrieved from the API
+# Select a course from the list of courses retrieved from the API
 courses = requests.get('http://api:4000/c/courses').json()
-selected_course = st.selectbox("Select a course:", courses, format_func = lambda x: f"{x['course_name']} CRN: {x['crn']}")
+selected_course = st.selectbox(
+    "Select a course:",
+    courses,
+    format_func=lambda x: f"{x['course_name']} CRN: {x['crn']}"
+)
 st.write(f"You selected: {selected_course['course_name']} (CRN: {selected_course['crn']})")
 
-# upload a new course material (Professor -2 user story)
-st.expander("Upload New Course Material", expanded=False):
+# Upload a new course material (Professor - 2 user story)
+with st.expander("Upload New Course Material", expanded=False):
     col1, col2 = st.columns(2)
+
     with col1:
         resource_name = st.text_input("Resource Name")
         resource_type = st.selectbox("Resource Type", ["PDF", "Video", "Textbook", "URL", "Image", "Other"])
+
     with col2:
         resource_id = st.text_input("Resource ID")
         upload_date = st.date_input("Upload Date")
@@ -44,25 +49,26 @@ st.expander("Upload New Course Material", expanded=False):
             "type": resource_type,
             "dateUploaded": str(upload_date),
             "description": description,
-            "CRN": selected_course['CRN']
+            "CRN": selected_course["crn"]   # FIXED KEY
         }
         response = requests.post('http://api:4000/c/resource', json=data)
+
         if response.status_code == 201:
             st.success("Resource uploaded successfully!")
         else:
             st.error("Failed to upload resource.")
-            st.error({response.json()})
+            st.error(response.json())
 
 st.write("---")
 
-
-# manages course materials (update [Professor 1.4]/delete [Professor 1.3])
+# Manage course materials (update/delete)
 st.subheader("Manage Existing Course Materials")
-resources = requests.get(f"http://api:4000/c/resources/{selected_course['CRN']}").json()
+resources = requests.get(f"http://api:4000/c/resources/{selected_course['crn']}").json()
 
 for resource in resources:
     with st.container():
-        col1, col2, col3 = st.columns([3,1, 1])
+        col1, col2, col3 = st.columns([3, 1, 1])
+
         with col1:
             st.write(f"**{resource['name']}** ({resource['type']})")
             st.caption(resource['description'] + f" | Uploaded on: {resource['dateUploaded']}")
@@ -71,9 +77,9 @@ for resource in resources:
         with col2:
             if st.button("Edit", key=f"edit_{resource['resourceID']}"):
                 st.session_state[f'editing_{resource["resourceID"]}'] = True
-       
-       # Delete resource [Professor 1.3]
-       with col3:
+
+        # Delete resource [Professor 1.3] -- FIXED INDENTATION
+        with col3:
             if st.button("Delete", key=f"delete_{resource['resourceID']}"):
                 response = requests.delete(f"http://api:4000/c/resource/{resource['resourceID']}")
                 if response.status_code == 200:
@@ -81,13 +87,14 @@ for resource in resources:
                 else:
                     st.error("Failed to delete resource.")
 
+        # Edit form
         if st.session_state.get(f'editing_{resource["resourceID"]}', False):
-            with st.form(key = f'form_{resource["resourceID"]}'):
+            with st.form(key=f'form_{resource["resourceID"]}'):
                 new_name = st.text_input("Resource Name", value=resource['name'])
                 new_description = st.text_area("Description", value=resource['description'])
 
-                col1, col2 = st.columns(2)
-                with col1:
+                colA, colB = st.columns(2)
+                with colA:
                     if st.form_submit_button("Save Changes"):
                         update_data = {
                             "name": new_name,
@@ -97,7 +104,8 @@ for resource in resources:
                         if response.status_code == 200:
                             st.success("Resource updated successfully!")
                             st.session_state[f'editing_{resource["resourceID"]}'] = False
-                with col2:
+
+                with colB:
                     if st.form_submit_button("Cancel"):
                         st.session_state[f'editing_{resource["resourceID"]}'] = False
 
