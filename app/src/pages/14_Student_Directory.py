@@ -104,7 +104,7 @@ with student_tab3:
     # Look up student button
     if student_nuid and st.button("🔍 Look Up Student", key="lookup_student"):
         try:
-            response = requests.get(f"{API_URL}/sm/students/{student_nuid}")
+            response = requests.get(f"{API_URL}/sm/student/{student_nuid}")
             if response.status_code == 200:
                 student = response.json()
                 st.success(f"Found: {student['firstName']} {student['lastName']}")
@@ -155,7 +155,7 @@ with student_tab3:
                     
                     if update_data:
                         try:
-                            response = requests.put(f"{API_URL}/sm/students/{student_nuid}", json=update_data)
+                            response = requests.put(f"{API_URL}/sm/student/{student_nuid}", json=update_data)
                             if response.status_code == 200:
                                 st.success("✅ Student updated successfully!")
                             else:
@@ -188,7 +188,7 @@ with student_tab3:
     
     # -------- Column 3: Remove Student --------
     with col3:
-        st.markdown("#### 🗑️ Remove Student")
+        st.markdown("####  Remove Student")
         st.warning("⚠️ Permanently removes student from course")
         
         confirm_delete = st.checkbox("I confirm deletion", key="confirm_delete")
