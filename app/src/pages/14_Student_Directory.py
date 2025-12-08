@@ -208,9 +208,9 @@ with student_tab3:
 
 st.markdown("---")
 
-# ============================================================================
-# TEACHING ASSISTANT MANAGEMENT SECTION
-# ============================================================================
+
+# TEACHING ASSISTANT MANAGEMENT SECTION===============================================
+
 
 st.header("👨‍🏫 Teaching Assistant Management")
 
@@ -292,7 +292,7 @@ with ta_tab2:
                         st.success(f"✅ TA {ta_first} {ta_last} added to the team!")
                         st.balloons()
                     else:
-                        st.error(f"❌ Error: {response.json().get('error', 'Unknown error')}")
+                        st.error(f":material.close: Error: {response.json().get('error', 'Unknown error')}")
                 except Exception as e:
                     st.error(f"❌ Connection error: {str(e)}")
 
