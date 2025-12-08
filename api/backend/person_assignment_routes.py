@@ -150,3 +150,130 @@ def add_teaching_assistant():
         }), 201
     except Error as e: 
         return jsonify({"error": str(e)}), 500
+
+# GET /ta_assignments - get all TA assignments [TA-2]
+@person_assignment.routes("/ta_assignments", methods=["GET"])
+def get_ta_assignments():
+    """
+    Get all TA assignments [TA-2]
+    Can filter by sessionID to see which TAs are assigned to a session or filter by taID
+    for which sessions a TA is assigned to
+    """
+    try: 
+        current_app.logger.info("Starting get_ta_assignments request")
+        cursor = db.get_db().cursor()
+
+        #query params
+        session_id = request.args.get("sessionID")
+        ta_id = request.args.get("taID")
+        #base query
+        query = """
+        SELECT 
+            tas.taID,
+            tas.sessionID,
+            ta.firstName, 
+            ta.lastName,
+            ta.email
+        FROM TA_Attends_Session tas
+        JOIN TeachingAssistant ta ON tas.taID = ta.nuID
+        WHERE 1=1
+        """
+        params = []
+
+        #add filters if ther
+        if session_id:
+            query += " AND tas.sessionID = %s"
+            params.append(session_id)
+        if ta_id:
+            query += " AND tas.taID = %s"
+            params.append(ta_id)
+        query += " ORDER BY tas.sessionID, ta.lastName"
+
+        cursor.execute(query,params)
+        assignments = cursor.fetchall()
+        cursor.close()
+
+        current_app.logger.info(f'Retreieved {len(assignments)} TA Assignments')
+        return jsonify(assignments), 200
+    except Error as e: 
+        current_app.logger.error(f'Database error in get_ta_assignments: {str(e)}')
+        return jsonify({"error": str(e)}), 500
+    
+# POST /ta_assignments - Assign TA to session [TA-2]
+@person_assignment.route("/ta_assignments", methods=["POST"])
+def assign_ta_to_session():
+    """
+    Assign a TA to a study session 
+    """
+    try: 
+        data = request.get_json()
+
+        #validate correct inputs r there
+        required_fields = ["taID", "sessionID"]
+        #loop through
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        cursor = db.get_db().cursor()
+
+        #check that TA is there
+        cursor.execute("SELECT * FROM TeachingAssistant WHERE nuID = %s", (data["taID"],))
+        if not cursor.fetchone():
+            return jsonify({"error": "Teaching assistant not found"}), 404
+        #check sessions there
+        cursor.execute("SELECT * FROM StudySessions WHERE sessionID = %s", (data["sessionID"],))
+        if not cursor.fetchone():
+            return jsonify({"error": "Study session not found"}), 404
+        
+        # Insert TA assignment 
+        query = """
+        INSERT INTO TA_Attends_Session (taID, sessionID)
+        VALUES (%s, %s)
+        """
+        cursor.execute(query, (data["taID"], data["sesssionID"]))
+
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message": "TA assigned to session successfully"}), 201
+    except Error as e: 
+        return jsonify({"error": str(e)}), 500
+    
+# DELETE /ta_assignments - remove TA assignments [TA-2]
+@person_assignment.route("/ta_assignments", methods=["DELETE"])
+def remove_ta_assignment():
+    """
+    Remove a TA assignment from a session [TA-2]
+    requires taID and sessionID
+    """
+
+    try:
+        #get query params
+        ta_id = request.args.get("taID")
+        session_id = request.args.get("sessionID")
+
+        #validate params ^
+        if not ta_id or not session_id:
+            return jsonify({"error": "Missing required params: taID and sessionID"}), 400
+        cursor = db.get_db().cursor()
+
+        #Check if assignment exists
+        cursor.execute(
+            "SELECT * FROM TA_Attends_Session WHERE taID = %s AND sessionID = %s", 
+            (ta_id, session_id)
+        )
+        if not cursor.fetchone():
+            return jsonify({"error": "Ta assignment not found"}), 400
+        
+        #delete it 
+        query = "DELETE FROM TA_Attends_Session WHERE taID = %s AND sessionID = %s"
+        cursor.execute(query, (ta_id, session_id))
+
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message" : "TA assignment removed"}), 200
+    except Error as e: 
+        return jsonify({"error": str(e)}), 500
+        
