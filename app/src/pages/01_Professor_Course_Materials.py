@@ -124,16 +124,6 @@ st.title("📚 Course Materials Management")
 # Use the hostname from docker-compose.yml
 API_BASE_URL = 'http://web-api:4000'
 
-<<<<<<< HEAD
-# Select a course from the list of courses retrieved from the API
-courses = requests.get('http://api:4000/c/courses').json()
-selected_course = st.selectbox(
-    "Select a course:",
-    courses,
-    format_func=lambda x: f"{x['course_name']} CRN: {x['crn']}"
-)
-st.write(f"You selected: {selected_course['course_name']} (CRN: {selected_course['crn']})")
-=======
 # Add error handling for connection issues
 def make_request(method, endpoint, **kwargs):
     """Helper function to make API requests with error handling"""
@@ -150,85 +140,12 @@ def make_request(method, endpoint, **kwargs):
     except Exception as e:
         st.error(f"Unexpected error: {e}")
         st.stop()
->>>>>>> 374fa3c (update professor-course-mat)
 
 try:
     # Test connection first
     with st.spinner("Connecting to API..."):
         test_response = make_request('GET', '/cr/course')
     
-<<<<<<< HEAD
-    description = st.text_area("Description")
-
-    if st.button("Upload Resource"):
-        data = {
-            "resourceID": resource_id,
-            "name": resource_name,
-            "type": resource_type,
-            "dateUploaded": str(upload_date),
-            "description": description,
-            "CRN": selected_course["crn"]   # FIXED KEY
-        }
-        response = requests.post('http://api:4000/c/resource', json=data)
-
-        if response.status_code == 201:
-            st.success("Resource uploaded successfully!")
-        else:
-            st.error("Failed to upload resource.")
-            st.error(response.json())
-
-st.write("---")
-
-# Manage course materials (update/delete)
-st.subheader("Manage Existing Course Materials")
-resources = requests.get(f"http://api:4000/c/resources/{selected_course['crn']}").json()
-
-for resource in resources:
-    with st.container():
-        col1, col2, col3 = st.columns([3, 1, 1])
-
-        with col1:
-            st.write(f"**{resource['name']}** ({resource['type']})")
-            st.caption(resource['description'] + f" | Uploaded on: {resource['dateUploaded']}")
-
-        # Update resource [Professor 1.4]
-        with col2:
-            if st.button("Edit", key=f"edit_{resource['resourceID']}"):
-                st.session_state[f'editing_{resource["resourceID"]}'] = True
-
-        # Delete resource [Professor 1.3] -- FIXED INDENTATION
-        with col3:
-            if st.button("Delete", key=f"delete_{resource['resourceID']}"):
-                response = requests.delete(f"http://api:4000/c/resource/{resource['resourceID']}")
-                if response.status_code == 200:
-                    st.success("Resource deleted successfully!")
-                else:
-                    st.error("Failed to delete resource.")
-
-        # Edit form
-        if st.session_state.get(f'editing_{resource["resourceID"]}', False):
-            with st.form(key=f'form_{resource["resourceID"]}'):
-                new_name = st.text_input("Resource Name", value=resource['name'])
-                new_description = st.text_area("Description", value=resource['description'])
-
-                colA, colB = st.columns(2)
-                with colA:
-                    if st.form_submit_button("Save Changes"):
-                        update_data = {
-                            "name": new_name,
-                            "description": new_description
-                        }
-                        response = requests.put(f"http://api:4000/c/resource/{resource['resourceID']}", json=update_data)
-                        if response.status_code == 200:
-                            st.success("Resource updated successfully!")
-                            st.session_state[f'editing_{resource["resourceID"]}'] = False
-
-                with colB:
-                    if st.form_submit_button("Cancel"):
-                        st.session_state[f'editing_{resource["resourceID"]}'] = False
-
-        st.divider()
-=======
     if test_response.status_code != 200:
         st.error(f"API Error: {test_response.status_code}")
         st.write(test_response.text)
@@ -366,4 +283,3 @@ except Exception as e:
     st.error(f"An error occurred: {str(e)}")
     st.write("**Debug info:**")
     st.code(f"API_BASE_URL: {API_BASE_URL}")
->>>>>>> 374fa3c (update professor-course-mat)
