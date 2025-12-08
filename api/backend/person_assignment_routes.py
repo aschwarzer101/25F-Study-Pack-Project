@@ -303,4 +303,105 @@ def remove_ta_assignment():
         return jsonify({"message" : "TA assignment removed"}), 200
     except Error as e: 
         return jsonify({"error": str(e)}), 500
+    
+# POST - Assign tutor to session
+@person_assignment.route("/tutor_assignments", methods=["POST"])
+def assign_tutor_to_session():
+    """Assign a tutor to a study session"""
+    try:
+        data = request.get_json()
         
+        required_fields = ["tutorID", "sessionID"]
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        cursor = db.get_db().cursor()
+        
+        # Check if tutor exists
+        cursor.execute("SELECT * FROM PeerTutor WHERE nuID = %s", (data["tutorID"],))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({"error": "Tutor not found"}), 404
+        
+        # Check if session exists
+        cursor.execute("SELECT * FROM StudySession WHERE sessionID = %s", (data["sessionID"],))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({"error": "Study session not found"}), 404
+        
+        # Insert into Tutor_Aides
+        query = """
+            INSERT INTO Tutor_Aides (tutorID, sessionID)
+            VALUES (%s, %s)
+        """
+        cursor.execute(query, (data["tutorID"], data["sessionID"]))
+        
+        db.get_db().commit()
+        cursor.close()
+        
+        return jsonify({"message": "Tutor assigned to session successfully"}), 201
+        
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+
+# GET - View all tutor assignments
+@person_assignment.route("/tutor_assignments", methods=["GET"])
+def get_tutor_assignments():
+    """Get all tutor assignments, optionally filtered by tutorID or sessionID"""
+    try:
+        tutor_id = request.args.get("tutorID")
+        session_id = request.args.get("sessionID")
+        
+        cursor = db.get_db().cursor()
+        
+        query = """
+            SELECT ta.tutorID, ta.sessionID, pt.firstName, pt.lastName
+            FROM Tutor_Aides ta
+            JOIN PeerTutor pt ON ta.tutorID = pt.nuID
+            WHERE 1=1
+        """
+        params = []
+        
+        if tutor_id:
+            query += " AND ta.tutorID = %s"
+            params.append(tutor_id)
+        
+        if session_id:
+            query += " AND ta.sessionID = %s"
+            params.append(session_id)
+        
+        cursor.execute(query, params)
+        assignments = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(assignments), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+
+# DELETE - Remove a tutor from session
+@person_assignment.route("/tutor_assignments", methods=["DELETE"])
+def remove_tutor_assignment():
+    """Remove a tutor assignment from a session"""
+    try:
+        tutor_id = request.args.get("tutorID")
+        session_id = request.args.get("sessionID")
+
+        if not tutor_id or not session_id:
+            return jsonify({"error": "Missing required params: tutorID and sessionID"}), 400
+        
+        cursor = db.get_db().cursor()
+        cursor.execute(
+            "SELECT * FROM Tutor_Aides WHERE tutorID = %s AND sessionID = %s", 
+            (tutor_id, session_id)
+        )
+        if not cursor.fetchone():
+            return jsonify({"error": "Tutor assignment not found"}), 404
+        
+        cursor.execute("DELETE FROM Tutor_Aides WHERE tutorID = %s AND sessionID = %s", (tutor_id, session_id))
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message": "Tutor assignment removed"}), 200
+    except Error as e: 
+        return jsonify({"error": str(e)}), 500

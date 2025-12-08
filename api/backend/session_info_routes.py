@@ -194,7 +194,7 @@ def get_study_sessions():
        where_clauses = ["ss.date >= CURDATE()"]
         # from alayna : trying to change this since query wasn't actually running anything
        if where_clauses:
-           query += " WHERE" + "AND".join(where_clauses)
+           query += " WHERE " + " AND ".join(where_clauses)
         
        query += " ORDER BY ss.date, ss.startTime"
        cursor.execute(query, params)
@@ -270,7 +270,7 @@ def get_study_session_details(session_id):
         
         # Get topics covered in this session
         cursor.execute("""
-            SELECT t.topicID, t.name AS topicName, c.courseName
+            SELECT t.topicID, t.name AS topicName, c.name
             FROM Session_Covers_Topic sct
             JOIN Topic t ON sct.crn = t.crn AND sct.topicID = t.topicID
             JOIN Course c ON t.crn = c.crn
