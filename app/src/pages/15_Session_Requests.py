@@ -197,8 +197,8 @@ with tab2:
                 key="search_tags"
             )
         with col2:
-            st.write("")
-            search_btn = st.button("🔍 Search", key="search_tags_btn", use_container_width=True)
+            # st.write(" ")
+            search_btn = st.button(":material/category_search: Search", key="search_tags_btn", use_container_width=True)
         
         if search_btn:
             try:
@@ -218,7 +218,7 @@ with tab2:
                                 st.write(f"**ID: {tag['tagID']}**")
                             with col2:
                                 badge_type = "primary" if tag['studentCreated?'] == 0 else "secondary"
-                                st.badge(tag['tagName'], type=badge_type)
+                                st.badge(tag['tagName'])
                             with col3:
                                 creator = "👤 Student" if tag['studentCreated?'] == 1 else "👨‍🏫 Admin"
                                 st.write(creator)
@@ -286,7 +286,7 @@ with tab2:
                     key="target_tag",
                     help="All references will point to this tag"
                 )
-                merge_submitted = st.form_submit_button("🔗 Merge Tags", type="primary")
+                merge_submitted = st.form_submit_button(":material/merge_type: Merge Tags", type="primary")
                 if merge_submitted:
                     if source_tag_id == target_tag_id:
                         st.error(":material/close: Cannot merge a tag into itself!")
