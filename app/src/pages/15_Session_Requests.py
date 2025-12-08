@@ -2,120 +2,377 @@ import streamlit as st
 import requests
 from streamlit_extras.app_logo import add_logo
 from modules.nav import SideBarLinks
+import pandas as pd
+st.set_page_config(
+    page_title="Session Requests Dashboard",
+    page_icon="📋",
+    layout="wide"
+)
+
 
 # Initialize sidebar
 SideBarLinks()
+st.title("Session Requests Dashboard")
+st.markdown("Manage student study session requests and tags")
+st.markdown("---")
 
-st.title("Study Session Requests")
+API_URL = "http://api:4000"
 
-left, middle, right = st.columns(3)
-
-left.button("Approved Requests", 
-          type = 'secondary',
-          use_container_width = False, 
-          icon = "👍") 
-
-middle.button("Pending Requests", 
-          type = 'secondary',
-          use_container_width = False, 
-          icon = "🔔") 
-
-right.button("Rejected Requests", 
-          type = 'secondary',
-          use_container_width = False, 
-          icon = "❌") 
-
-# Initialize session state for modal
-if "show_success_modal" not in st.session_state:
-    st.session_state.show_success_modal = False
-if "success_ngo_name" not in st.session_state:
-    st.session_state.success_ngo_name = ""
-if "reset_form" not in st.session_state:
-    st.session_state.reset_form = False
-if "form_key_counter" not in st.session_state:
-    st.session_state.form_key_counter = 0
-
-# Define the success dialog function
-@st.dialog("Success")
-def show_success_dialog(ngo_name):
-    st.markdown(f"### {ngo_name} has been successfully added to the system!")
-    
-    # Create two buttons side by side
-    col1, col2 = st.columns(2)
+# DAHBOARD
+col1, col2, col3, col4 = st.columns(4)
+try:
+    #pwnding
+    pending_response = requests.get(f"{API_URL}/rt/session_requests?status=Pending")
+    pending_count = len(pending_response.json()) if pending_response.status_code == 200 else 0
+    #ones approved this week
+    approved_response = requests.get(f"{API_URL}/rt/session_requests?status=Approved")
+    approved_count = len(approved_response.json()) if approved_response.status_code == 200 else 0
+    #tags
+    tags_response = requests.get(f"{API_URL}/rt/tags")
+    tag_count = len(tags_response.json()) if tags_response.status_code == 200 else 0
+    # TA assignments
+    assignments_response = requests.get(f"{API_URL}/pa/ta_assignments")
+    assignment_count = len(assignments_response.json()) if assignments_response.status_code == 200 else 0
     
     with col1:
-        if st.button("Return to NGO Directory", use_container_width=True):
-            st.session_state.show_success_modal = False
-            st.session_state.success_ngo_name = ""
-            st.switch_page("pages/14_Student_Directory.py")
-    
+        st.metric(
+            label="⏳ Pending Requests",
+            value=pending_count,
+            delta=None
+        )
     with col2:
-        if st.button("Add Another NGO", use_container_width=True):
-            st.session_state.show_success_modal = False
-            st.session_state.success_ngo_name = ""
-            st.session_state.reset_form = True
-            st.rerun()
+        st.metric(
+            label="✅ Approved",
+            value=approved_count,
+            delta=None
+        )
+    with col3:
+        st.metric(
+            label="🏷️ Total Tags",
+            value=tag_count,
+            delta=None
+        )
+    
+    with col4:
+        st.metric(
+            label="👨‍🏫 Active Assignments",
+            value=assignment_count,
+            delta=None
+        )
 
-# Handle form reset
-if st.session_state.reset_form:
-    st.session_state.form_key_counter += 1
-    st.session_state.reset_form = False
+except Exception as e:
+    st.error(f"Error loading metrics: {str(e)}")
 
-# API endpoint
-API_URL = "http://web-api:4000/ngo/ngos"
+st.markdown("---")
 
-# Create a form for NGO details with dynamic key to force reset
-with st.form(f"add_ngo_form_{st.session_state.form_key_counter}"):
-    st.subheader("NGO Information")
+# REQUESTS SECTION
+st.header(" Session Requests")
 
-    # Required fields
-    name = st.text_input("Organization Name *")
-    country = st.text_input("Country *")
-    founding_year = st.number_input(
-        "Founding Year *", min_value=1800, max_value=2024, value=2024
+# Filters
+col1, col2 = st.columns([3, 1])
+with col1:
+    status_filter = st.selectbox(
+        "Filter by Status",
+        ["All", "Pending", "Approved", "Completed"],
+        key="status_filter"
     )
-    focus_area = st.text_input("Focus Area *")
-    website = st.text_input("Website URL *")
+with col2:
+    st.write("")  # Spacing
+    refresh_requests = st.button(" Refresh", key="refresh_requests", use_container_width=True)
 
-    # Form submission button
-    submitted = st.form_submit_button("Add NGO")
-
-    if submitted:
-        # Validate required fields
-        if not all([name, country, founding_year, focus_area, website]):
-            st.error("Please fill in all required fields marked with *")
+#get requests
+if refresh_requests or status_filter:
+    try:
+        url = f"{API_URL}/rt/session_requests"
+        if status_filter != "All":
+            url += f"?status={status_filter}"
+        
+        response = requests.get(url)
+        if response.status_code == 200:
+            requests_data = response.json()
+            
+            if requests_data:
+                #loop through requests
+                for req in requests_data:
+                    with st.container(border=True):
+                        #request DI and status
+                        col1, col2, col3 = st.columns([2, 2, 1])
+                        
+                        with col1:
+                            st.markdown(f"### Request #{req['requestID']}")
+                            st.caption(f" Created: {req['dateCreated']}")
+                        
+                        with col2:
+                            
+                            if req['status'] == 'Pending':
+                                st.badge("Pending", color="yellow", width="content")
+                            elif req['status'] == 'Approved':
+                                st.badge("Approved", color="green", width="content")
+                            elif req['status'] == 'Completed':
+                                st.badge("Completed", color="gray", width="content")
+                            
+                           
+                            if req.get('tags'):
+                                st.write("**Tags:**")
+                                tag_names = req['tags'].split(',')
+                                tag_cols = st.columns(len(tag_names))
+                                for i, tag in enumerate(tag_names):
+                                    with tag_cols[i]:
+                                        st.badge(tag.strip())
+                        
+                        with col3:
+                            #action buttons
+                            if req['status'] == 'Pending':
+                                if st.button("✅ Approve", key=f"approve_{req['requestID']}", use_container_width=True, type="primary"):
+                                    try:
+                                        approve_response = requests.put(
+                                            f"{API_URL}/rt/session_requests/{req['requestID']}",
+                                            json={"status": "Approved"}
+                                        )
+                                        if approve_response.status_code == 200:
+                                            st.success("Request approved!")
+                                            st.rerun()
+                                        else:
+                                            st.error("Approval failed")
+                                    except Exception as e:
+                                        st.error(f"Error: {str(e)}")
+                                
+                                if st.button("❌ Reject", key=f"reject_{req['requestID']}", use_container_width=True):
+                                    try:
+                                        delete_response = requests.delete(
+                                            f"{API_URL}/rt/session_requests/{req['requestID']}"
+                                        )
+                                        if delete_response.status_code == 200:
+                                            st.success("Request rejected!")
+                                            st.rerun()
+                                        else:
+                                            st.error("Rejection failed")
+                                    except Exception as e:
+                                        st.error(f"Error: {str(e)}")
+                        
+                        # Student names
+                        if req.get('studentFirstNames'):
+                            st.write(f"**👥 Requesting Students:** {req['studentFirstNames']}")
+                        
+                        #more info/details button
+                        if st.button("🔍 View Details", key=f"details_{req['requestID']}"):
+                            try:
+                                detail_response = requests.get(f"{API_URL}/rt/session_requests/{req['requestID']}")
+                                if detail_response.status_code == 200:
+                                    details = detail_response.json()
+                                    st.json(details)
+                            except Exception as e:
+                                st.error(f"Error: {str(e)}")
+                
+                st.success(f"✅ Showing {len(requests_data)} request(s)")
+            else:
+                st.info("No session requests found")
         else:
-            # Prepare the data for API
-            ngo_data = {
-                "Name": name,
-                "Country": country,
-                "Founding_Year": int(founding_year),
-                "Focus_Area": focus_area,
-                "Website": website,
-            }
+            st.error(f"Error fetching requests: {response.text}")
+    except Exception as e:
+        st.error(f"Connection error: {str(e)}")
 
-            try:
-                # Send POST request to API
-                response = requests.post(API_URL, json=ngo_data)
+st.markdown("---")
 
-                if response.status_code == 201:
-                    # Store NGO name and show modal
-                    st.session_state.show_success_modal = True
-                    st.session_state.success_ngo_name = name
-                    st.rerun()
+
+# TAG MANAGEMENT SECTION ====================
+st.header(" Tag Management")
+st.markdown("Find and merge duplicate tags to keep requests organized")
+
+tag_tab1, tag_tab2, tag_tab3 = st.tabs(["View Tags", "Create Tag", "Merge/Delete Tags"])
+
+#tab 1: view tags
+with tag_tab1:
+    st.subheader("Search Tags")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        search_tag = st.text_input(
+            "Search for similar tags",
+            placeholder="git (finds 'git help', 'GitHub help', etc.)",
+            key="search_tags"
+        )
+    with col2:
+        st.write("")
+        search_btn = st.button("🔍 Search", key="search_tags_btn", use_container_width=True)
+    
+    if search_btn:
+        try:
+            url = f"{API_URL}/rt/tags"
+            if search_tag:
+                url += f"?search={search_tag}"
+            
+            response = requests.get(url)
+            if response.status_code == 200:
+                tags = response.json()
+                if tags:
+                    st.write(f"**Found {len(tags)} matching tag(s):**")
+                    
+                    for tag in tags:
+                        col1, col2, col3 = st.columns([1, 3, 1])
+                        with col1:
+                            st.write(f"**ID: {tag['tagID']}**")
+                        with col2:
+                            badge_type = "primary" if tag['studentCreated?'] == 0 else "secondary"
+                            st.badge(tag['tagName'], type=badge_type)
+                        with col3:
+                            creator = "👤 Student" if tag['studentCreated?'] == 1 else "👨‍🏫 Admin"
+                            st.write(creator)
                 else:
-                    st.error(
-                        f"Failed to add NGO: {response.json().get('error', 'Unknown error')}"
+                    st.info("No tags found")
+            else:
+                st.error(f"Error: {response.text}")
+        except Exception as e:
+            st.error(f"Connection error: {str(e)}")
+
+
+# tab 2: create new tag
+with tag_tab2:
+    st.subheader("Create New Standardized Tag")
+    
+    with st.form("create_tag_form"):
+        new_tag_name = st.text_input("Tag Name *", placeholder="SQL Help")
+        student_created = st.checkbox("Student Created", value=False)
+        
+        st.markdown("*Required fields")
+        submitted = st.form_submit_button("➕ Create Tag", type="primary")
+        
+        if submitted:
+            if not new_tag_name:
+                st.error("Please enter a tag name")
+            else:
+                tag_data = {
+                    "tagName": new_tag_name,
+                    "studentCreated": 1 if student_created else 0
+                }
+                try:
+                    response = requests.post(f"{API_URL}/rt/tags", json=tag_data)
+                    if response.status_code == 201:
+                        st.success(f"Tag '{new_tag_name}' created!")
+                        st.balloons()
+                    else:
+                        st.error(f"Error: {response.json().get('error', 'Unknown error')}")
+                except Exception as e:
+                    st.error(f"Connection error: {str(e)}")
+# tab 3: merge / delete tags
+with tag_tab3:
+    st.subheader("Manage Duplicate Tags")
+    
+    st.info("Use the search feature in 'View Tags' to find duplicate tags like 'git help' and 'GitHub help'")
+    
+    col1, col2 = st.columns(2)
+    
+    # Merge tags
+    with col1:
+        st.markdown("#### Merge Duplicate Tags")
+        
+        with st.form("merge_tags_form"):
+            st.write("Consolidate two similar tags into one")
+            source_tag_id = st.number_input(
+                "Tag ID to Remove",
+                min_value=1,
+                step=1,
+                key="source_tag",
+                help="This tag will be deleted after merging"
+            )
+            target_tag_id = st.number_input(
+                "Tag ID to Keep",
+                min_value=1,
+                step=1,
+                key="target_tag",
+                help="All references will point to this tag"
+            )
+            merge_submitted = st.form_submit_button("🔗 Merge Tags", type="primary")
+            if merge_submitted:
+                if source_tag_id == target_tag_id:
+                    st.error("❌ Cannot merge a tag into itself!")
+                else:
+                    merge_data = {"mergeIntoTagID": target_tag_id}
+                    try:
+                        response = requests.put(f"{API_URL}/rt/tags/{source_tag_id}", json=merge_data)
+                        if response.status_code == 200:
+                            st.success(f"✅ Tag {source_tag_id} merged into {target_tag_id}!")
+                            st.balloons()
+                        else:
+                            st.error(f"Error: {response.json().get('error', 'Unknown error')}")
+                    except Exception as e:
+                        st.error(f"Connection error: {str(e)}")
+    
+    # deleteing tag
+    with col2:
+        st.markdown("#### 🗑️ Delete Tag")
+        st.warning("⚠️ Permanently removes tag and all associations")
+        
+        delete_tag_id = st.number_input(
+            "Tag ID to Delete",
+            min_value=1,
+            step=1,
+            key="delete_tag"
+        )
+        confirm_tag_delete = st.checkbox("I'm sure", key="confirm_tag_delete")
+        if st.button(
+            "🗑️ Delete Tag",
+            disabled=not confirm_tag_delete,
+            key="delete_tag_btn",
+            use_container_width=True,
+            type="secondary"
+        ):
+            try:
+                response = requests.delete(f"{API_URL}/rt/tags/{delete_tag_id}")
+                if response.status_code == 200:
+                    st.success("Tag deleted successfully!")
+                else:
+                    st.error(f"Error: {response.json().get('error', 'Unknown error')}")
+            except Exception as e:
+                st.error(f"Connection error: {str(e)}")
+
+st.markdown("---")
+
+
+# ASSIGNING TA'S SESSION==========================================
+
+st.header(" Assign TAs to Study Sessions")
+col1, col2 = st.columns(2)
+with col1:
+    with st.form("assign_ta_form"):
+        st.markdown("**Assign TA to Session**")
+        assign_ta_id = st.number_input("TA NU ID *", min_value=1000000, max_value=9999999, value=1567890, step=1)
+        assign_session_id = st.number_input("Session ID *", min_value=1, step=1, value=1001)
+        assign_submitted = st.form_submit_button("➕ Assign TA", type="primary", use_container_width=True)
+        
+        if assign_submitted:
+            assignment_data = {
+                "taID": assign_ta_id,
+                "sessionID": assign_session_id
+            }
+            try:
+                response = requests.post(f"{API_URL}/pa/ta_assignments", json=assignment_data)
+                if response.status_code == 201:
+                    st.success("TA assigned to session!")
+                    st.balloons()
+                else:
+                    st.error(f"Error: {response.json().get('error', 'Unknown error')}")
+            except Exception as e:
+                st.error(f"Connection error: {str(e)}")
+
+with col2:
+    st.markdown("**Current TA Assignments**")
+    if st.button("📋 View Assignments", key="view_assignments", use_container_width=True):
+        try:
+            #alayna check this url later
+            response = requests.get(f"{API_URL}/pa/ta_assignments")
+            if response.status_code == 200:
+                assignments = response.json()
+                if assignments:
+                    df = pd.DataFrame(assignments)
+                    st.dataframe(
+                        df[['taID', 'sessionID', 'firstName', 'lastName']],
+                        use_container_width=True,
+                        hide_index=True
                     )
-
-            except requests.exceptions.RequestException as e:
-                st.error(f"Error connecting to the API: {str(e)}")
-                st.info("Please ensure the API server is running")
-
-# Show success modal if NGO was added successfully
-if st.session_state.show_success_modal:
-    show_success_dialog(st.session_state.success_ngo_name)
-
-# Add a button to return to the NGO Directory
-if st.button("Return to NGO Directory"):
-    st.switch_page("pages/14_Student_Directory.py")
+                else:
+                    st.info("No TA assignments found")
+            else:
+                st.error("Error fetching assignments")
+        except Exception as e:
+            st.error(f"Connection error: {str(e)}")
