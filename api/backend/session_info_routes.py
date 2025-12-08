@@ -4,7 +4,7 @@ from mysql.connector import Error
 from flask import current_app
 
 
-students = Blueprint("session location", __name__)
+session_info = Blueprint("session_info", __name__)
 
 # # Get all study locations with optional filtering by status/building
 # # (example checking status of rooms in Snell)
@@ -46,7 +46,7 @@ students = Blueprint("session location", __name__)
 #         return jsonify({"error" : str(e)}), 500
     
 # GET - Return locations of active study sessions [Student-4] [Tutor-1]
-@students.route("/study_location", methods=["GET"])
+@session_info.route("/study_location", methods=["GET"])
 def get_study_locations():
    """Get all study locations with active sessions"""
    try:
@@ -90,7 +90,7 @@ def get_study_locations():
 
 
 # # GET - Get specific location details
-# @students.route("/study_location/<int:loc_id>", methods=["GET"])
+# @session_info.route("/study_location/<int:loc_id>", methods=["GET"])
 # def get_study_location_details(loc_id):
 #    """Get details of a specific study location"""
 #    try:
@@ -123,9 +123,55 @@ def get_study_locations():
 #    except Error as e:
 #        return jsonify({"error": str(e)}), 500
 
+# POST - Add a new study location [TA-4]
+@session_info.route("/study_location", methods=["POST"])
+def create_study_location():
+    """Create a new study location"""
+    try:
+        current_app.logger.info('Creating new study location')
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ["capacity", "room", "building"]
+        for field in required_fields:
+            if field not in data:
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+        
+        cursor = db.get_db().cursor()
+        
+        # status defaults to 1 (active) if not provided
+        status = data.get("status", 1)
+        
+        query = """
+            INSERT INTO StudyLocation (status, capacity, room, building)
+            VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(query, (
+            status,
+            data["capacity"],
+            data["room"],
+            data["building"]
+        ))
+        
+        db.get_db().commit()
+        
+        # Get the ID of the newly created location
+        new_location_id = cursor.lastrowid
+        
+        cursor.close()
+        
+        current_app.logger.info(f'Created study location with ID {new_location_id}')
+        return jsonify({
+            "message": "Study location created successfully",
+            "locID": new_location_id
+        }), 201
+        
+    except Error as e:
+        current_app.logger.error(f'Database error: {str(e)}')
+        return jsonify({"error": str(e)}), 500
 
 # GET - Return all active study sessions [Student-4] [Tutor-1]
-@students.route("/study_session", methods=["GET"])
+@session_info.route("/study_session", methods=["GET"])
 def get_study_sessions():
    """Get all active study sessions, optionally filtered by course or topic"""
    try:
@@ -153,7 +199,7 @@ def get_study_sessions():
        return jsonify({"error": str(e)}), 500
    
 # POST - Start a study session [Student-1]
-@students.route("/study_session", methods=["POST"])
+@session_info.route("/study_session", methods=["POST"])
 def create_study_session():
    """Create a new study session"""
    try:
@@ -189,8 +235,53 @@ def create_study_session():
    except Error as e:
        return jsonify({"error": str(e)}), 500
 
+# GET - Return details for a specific study session [Professor 6]
+@session_info.route("/study_session/<int:session_id>", methods=["GET"])
+def get_study_session_details(session_id):
+    """ Get detailed information about a specific study session including topics covered and time spent on each topic"""
+    try:
+        current_app.logger.info(f'Getting details for session {session_id}')
+        cursor = db.get_db().cursor()
+        
+        # Get basic session information
+        cursor.execute("""
+            SELECT ss.sessionID, ss.date, ss.startTime, ss.endTime,
+                   sl.building, sl.room, sl.capacity,
+                   TIMESTAMPDIFF(MINUTE, ss.startTime, ss.endTime) AS durationMinutes
+            FROM StudySession ss
+            JOIN StudyLocation sl ON ss.locID = sl.locID
+            WHERE ss.sessionID = %s
+        """, (session_id,))
+        
+        session = cursor.fetchone()
+        
+        if not session:
+            cursor.close()
+            return jsonify({"error": "Study session not found"}), 404
+        
+        # Get topics covered in this session
+        cursor.execute("""
+            SELECT t.topicID, t.name AS topicName, c.courseName
+            FROM Session_Covers_Topic sct
+            JOIN Topic t ON sct.crn = t.crn AND sct.topicID = t.topicID
+            JOIN Course c ON t.crn = c.crn
+            WHERE sct.sessionID = %s
+        """, (session_id,))
+        
+        topics = cursor.fetchall()
+        session["topics_covered"] = topics
+        
+        cursor.close()
+        
+        current_app.logger.info(f'Retrieved session details for session {session_id}')
+        return jsonify(session), 200
+        
+    except Error as e:
+        current_app.logger.error(f'Database error: {str(e)}')
+        return jsonify({"error": str(e)}), 500
+
 # PUT - Update details for a study session [Student-1]
-@students.route("/study_session/<int:session_id>", methods=["PUT"])
+@session_info.route("/study_session/<int:session_id>", methods=["PUT"])
 def update_study_session(session_id):
    """Update an existing study session"""
    try:
@@ -225,7 +316,7 @@ def update_study_session(session_id):
        return jsonify({"error": str(e)}), 500
 
 # DELETE - Cancel a study session [Student-1]
-@students.route("/study_session/<int:session_id>", methods=["DELETE"])
+@session_info.route("/study_session/<int:session_id>", methods=["DELETE"])
 def delete_study_session(session_id):
    """Cancel/delete a study session"""
    try:

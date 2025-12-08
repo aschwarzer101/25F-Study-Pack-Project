@@ -4,10 +4,10 @@ from mysql.connector import Error
 from flask import current_app
 
 
-students = Blueprint("student management", __name__)
+student_management = Blueprint("student_management", __name__)
 
 # GET - Return a student's information [Student-6] [Tutor-4]
-@students.route("/student/<int:nuid>", methods=["GET"])
+@student_management.route("/student/<int:nuid>", methods=["GET"])
 def get_student_info(nuid):
    """Get information about a specific student"""
    try:
@@ -34,7 +34,7 @@ def get_student_info(nuid):
        return jsonify({"error": str(e)}), 500
 
 # PUT - Update student information [Student-6] [TA-3]
-@students.route("/student/<int:nuid>", methods=["PUT"])
+@student_management.route("/student/<int:nuid>", methods=["PUT"])
 def update_student_info(nuid):
    """Update a student's information"""
    try:
