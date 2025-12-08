@@ -152,7 +152,7 @@ def add_teaching_assistant():
         return jsonify({"error": str(e)}), 500
 
 # GET /ta_assignments - get all TA assignments [TA-2]
-@person_assignment.routes("/ta_assignments", methods=["GET"])
+@person_assignment.route("/ta_assignments", methods=["GET"])
 def get_ta_assignments():
     """
     Get all TA assignments [TA-2]
