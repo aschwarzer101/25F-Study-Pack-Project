@@ -1,8 +1,194 @@
-# Fall 2025 CS 3200 Project Template
+# 🐾 StudyPack
 
-This is a template repo for Dr. Fontenot's Fall 2025 CS 3200 Course Project. 
+**A Collaborative Learning Platform for Students, Tutors, and Teaching Staff**
 
-It includes most of the infrastructure setup (containers), sample databases, and example UI pages. Explore it fully and ask questions!
+---
+
+## 📖 About StudyPack
+
+StudyPack is a comprehensive web application designed to enhance the academic experience at Northeastern University by consolidating study resources, facilitating peer collaboration, and streamlining coordination between students, peer tutors, teaching assistants, and professors.
+
+### The Problem We're Solving
+
+Students currently face:
+- Scattered resources across multiple platforms
+- Difficulty organizing study sessions with peers
+- Limited visibility into available tutoring and TA support
+- Fragmented communication channels for academic help
+
+### Our Solution
+
+StudyPack provides:
+- **Centralized Resource Hub**: All course materials in one place
+- **Study Session Discovery**: Find and join active study sessions across campus
+- **Smart Request Management**: Students can request help, TAs can efficiently respond
+- **Peer Tutoring Network**: Connect with peer tutors and teaching assistants
+- **Location Management**: Track available study spaces in real-time
+
+---
+
+## 👥 Team: Pawgrammers
+
+- **Alayna Schwarzer** - schwarzer.a@northeastern.edu
+- **Nancy Guan** - guan.na@northeastern.edu
+- **Liya Liju** - liju.l@northeastern.edu
+- **Ananya Krishnamurthy** - krishnamurthy.an@northeastern.edu
+
+---
+
+## 🏗️ Project Architecture
+
+### Technology Stack
+
+- **Backend**: Flask REST API (Python)
+- **Frontend**: Streamlit
+- **Database**: MySQL 8.0
+- **Containerization**: Docker & Docker Compose
+- **Version Control**: Git/GitHub
+
+### System Components
+
+```
+StudyPack/
+├── api/                    # Flask REST API
+│   └── backend/
+│       ├── student_management_routes.py
+│       ├── course_resource_routes.py
+│       ├── session_info_routes.py
+│       ├── request_tag_routes.py
+│       ├── person_assignment_routes.py
+│       └── rest_entry.py
+├── app/                    # Streamlit UI
+│   └── src/
+│       ├── Home.py
+│       └── pages/
+├── database-files/         # SQL schema and mock data
+└── docker-compose.yaml
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Docker Desktop installed and running
+- Git installed
+- Text editor (VS Code recommended)
+
+### Setup Instructions
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/aschwarzer101/25F-Study-Pack-Project.git
+cd 25F-Study-Pack-Project
+```
+
+#### 2. Create Environment File
+
+Create a `.env` file in the project root directory with the following configuration:
+
+```env
+SECRET_KEY=your_secret_key_here
+DB_USER=root
+MYSQL_ROOT_PASSWORD=your_password_here
+DB_HOST=mysql_db
+DB_PORT=3306
+DB_NAME=StudyPack
+```
+
+**Important Notes:**
+- Replace `your_secret_key_here` with a secure random string
+- Replace `your_password_here` with your MySQL root password
+- Do **NOT** commit the `.env` file to Git (it's in `.gitignore`)
+
+#### 3. Start Docker Containers
+
+```bash
+# Start all services (database, API, and Streamlit app)
+docker compose up -d
+
+# Wait 10-15 seconds for MySQL to fully initialize
+```
+
+#### 4. Verify Services Are Running
+
+```bash
+# Check all containers are running
+docker ps
+
+# You should see three containers:
+# - mysql_db (MySQL database)
+# - api (Flask REST API)
+# - app (Streamlit frontend)
+```
+
+#### 5. Access the Application
+
+- **Streamlit UI**: http://localhost:8501
+- **API Documentation**: http://localhost:4000
+- **Database**: localhost:3200 (use DataGrip or MySQL Workbench)
+
+### Rebuilding After Database Changes
+
+If you modify SQL files in `database-files/`:
+
+```bash
+# Stop and remove containers
+docker compose down -v
+
+# Recreate containers (executes SQL files)
+docker compose up -d
+```
+
+---
+
+## 🎯 User Personas & Features
+
+### 👩‍🏫 Professor (Anna Smith)
+**Role**: Data Admin & Content Manager
+
+**Key Features**:
+- Upload and manage course materials (videos, PDFs, images)
+- Track which topics students are studying
+- Analyze time students spend on each topic
+- Create new courses and update resources
+
+### 👨‍💼 TA Admin (Gabby Gutierrez)
+**Role**: System Administrator
+
+**Key Features**:
+- Manage student enrollments and course sections
+- Assign TAs to study sessions
+- Approve/reject study session requests
+- Manage study locations (add, edit, deactivate)
+- Post announcements to students
+- Consolidate duplicate request tags
+
+### 👨‍🎓 Student (Jean-Baptiste Clamence)
+**Role**: Primary User
+
+**Key Features**:
+- Discover and join active study sessions
+- Create study session requests
+- Upload and access course materials
+- Contact TAs and peer tutors
+- Search for courses and resources
+- Communicate with group members
+
+### 👨‍🏫 Peer Tutor (John Adams)
+**Role**: Student Helper
+
+**Key Features**:
+- View study sessions requesting tutors
+- Filter sessions by course/topic
+- Access course materials for tutoring prep
+- Upload helpful study resources
+- See common help requests to organize group sessions
+- Contact students for coordination
+
+---
 
 ## Prerequisites
 
