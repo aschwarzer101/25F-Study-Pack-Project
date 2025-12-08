@@ -10,12 +10,8 @@ st.set_page_config(layout='wide')
 
 SideBarLinks()
 
-<<<<<<< HEAD
 st.title('📚 Available Study Sessions')
 
-# ============================================
-# 1. Display All Upcoming Study Sessions
-# ============================================
 st.write("## All Upcoming Study Sessions")
 
 if st.button("Load All Sessions", type="primary", use_container_width=True):
@@ -44,9 +40,7 @@ if st.button("Load All Sessions", type="primary", use_container_width=True):
 
 st.write("---")
 
-# ============================================
-# 2. Search Sessions by Building
-# ============================================
+
 st.write("## 🔍 Search by Location")
 
 col1, col2 = st.columns(2)
@@ -85,9 +79,7 @@ if st.button("Search by Location", use_container_width=True):
 
 st.write("---")
 
-# ============================================
-# 3. Search Sessions by Date
-# ============================================
+
 st.write("## 📅 Search by Date")
 
 session_date = st.date_input("Select date:", datetime.now())
@@ -114,9 +106,7 @@ if st.button("Search by Date", use_container_width=True):
 
 st.write("---")
 
-# ============================================
-# 4. Session Details View
-# ============================================
+
 st.write("## 📋 View Session Details")
 
 session_id = st.number_input("Enter Session ID:", min_value=1000, max_value=1100, value=1001, step=1)
@@ -270,7 +260,7 @@ with col2:
                 st.error(f"Error: {e}")
 
 st.write("---")
-=======
+
 # GET - Return all students [TA-1]
 @student_management.route("/students", methods=["GET"])
 def get_all_students():
@@ -456,4 +446,4 @@ def create_peer_tutor(nuid):
    except Error as e:
        current_app.logger.error(f'Database error: {str(e)}')
        return jsonify({"error": str(e)}), 500
->>>>>>> 0414d4bea87b7ab6a83fd9e0710380b51a9ef70c
+#>>>>>>> 0414d4bea87b7ab6a83fd9e0710380b51a9ef70c

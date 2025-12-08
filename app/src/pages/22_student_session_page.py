@@ -14,15 +14,13 @@ st.title('Available Study Sessions')
 st.write('\n\n')
 st.write('## Find a Study Session')
 
-# ============================================
-# 1. Display All Study Sessions
-# ============================================
+
 st.write("## All Upcoming Study Sessions")
 
 if st.button("Load All Sessions", type="primary", use_container_width=True):
     try:
         # API call to get all study sessions
-        url = "http://web-api:4000/sessions"
+        url = "http://localhost:4000/sessions"
         response = requests.get(url)
         sessions = response.json()
         
@@ -36,9 +34,7 @@ if st.button("Load All Sessions", type="primary", use_container_width=True):
     except Exception as e:
         st.error(f"Error loading sessions: {e}")
 
-# ============================================
-# 2. Search Sessions by Location
-# ============================================
+
 st.write("## Search by Location")
 
 building = st.text_input("Enter building name:", "")
@@ -46,7 +42,7 @@ room = st.text_input("Enter room number:", "")
 
 if st.button("Search by Location", use_container_width=True):
     try:
-        url = f"http://web-api:4000/sessions/location?building={building}&room={room}"
+        url = f"http://localhost:4000/sessions/location?building={building}&room={room}"
         results = requests.get(url).json()
         
         if results:
@@ -57,16 +53,14 @@ if st.button("Search by Location", use_container_width=True):
     except Exception as e:
         st.error(f"Error: {e}")
 
-# ============================================
-# 3. Search Sessions by Date
-# ============================================
+
 st.write("## Search by Date")
 
 session_date = st.date_input("Select date:")
 
 if st.button("Search by Date", use_container_width=True):
     try:
-        url = f"http://web-api:4000/sessions/date/{session_date}"
+        url = f"http://localhost:4000/sessions/date/{session_date}"
         results = requests.get(url).json()
         
         if results:
@@ -77,16 +71,15 @@ if st.button("Search by Date", use_container_width=True):
     except Exception as e:
         st.error(f"Error: {e}")
 
-# ============================================
-# 4. Search Sessions by Course (CRN)
-# ============================================
+
 st.write("## Search by Course")
 
-crn = st.number_input("Enter Course CRN:", min_value=0, step=1)
+crn_input = st.text_input("Enter Course CRN:", value="12345", max_chars=5)  # ✅ Changed to text_input
 
 if st.button("Search by Course", use_container_width=True):
     try:
-        url = f"http://web-api:4000/sessions/course/{crn}"
+        crn = int(crn_input)  # Convert to integer
+        url = f"http://localhost:4000/sessions/course/{crn}"
         results = requests.get(url).json()
         
         if results:
@@ -94,52 +87,22 @@ if st.button("Search by Course", use_container_width=True):
             st.dataframe(pd.DataFrame(results), use_container_width=True)
         else:
             st.info("No sessions found for this course.")
+    except ValueError:
+        st.error("Please enter a valid CRN number")
     except Exception as e:
         st.error(f"Error: {e}")
 
-# ============================================
-# 5. Interactive Map of Study Locations
-# ============================================
-st.write("## Map of Study Locations")
 
-if st.checkbox("Show Session Locations on Map"):
-    try:
-        # Get all study locations with their sessions
-        url = "http://web-api:4000/locations"
-        locations = requests.get(url).json()
-        
-        if locations:
-            # You'll need actual lat/lon coordinates for your buildings
-            # This is a placeholder - replace with real coordinates
-            map_data = []
-            for loc in locations:
-                map_data.append({
-                    "lat": 42.3398,  # Example: Northeastern latitude
-                    "lon": -71.0892,  # Example: Northeastern longitude
-                    "building": loc.get("building", ""),
-                    "room": loc.get("room", ""),
-                    "capacity": loc.get("capacity", 0)
-                })
-            
-            df = pd.DataFrame(map_data)
-            st.map(df)
-            st.write("Study Locations:")
-            st.dataframe(df)
-        else:
-            st.warning("No locations found.")
-    except Exception as e:
-        st.error(f"Error loading map data: {e}")
 
-# ============================================
-# 6. Session Details View
-# ============================================
+
 st.write("## View Session Details")
 
-session_id = st.number_input("Enter Session ID:", min_value=0, step=1, key="detail_id")
+session_id_input = st.text_input("Enter Session ID:", value="1001", max_chars=4, key="detail_id")  # ✅ Changed to text_input
 
 if st.button("Get Session Details", use_container_width=True):
     try:
-        url = f"http://web-api:4000/sessions/{session_id}"
+        session_id = int(session_id_input)  # Convert to integer
+        url = f"http://localhost:4000/sessions/{session_id}"
         session = requests.get(url).json()
         
         if session:
@@ -162,7 +125,7 @@ if st.button("Get Session Details", use_container_width=True):
                 st.write(f"Capacity: {session.get('capacity')}")
             
             # Get topics covered
-            topics_url = f"http://web-api:4000/sessions/{session_id}/topics"
+            topics_url = f"http://localhost:4000/sessions/{session_id}/topics"
             topics = requests.get(topics_url).json()
             
             if topics:
@@ -171,7 +134,7 @@ if st.button("Get Session Details", use_container_width=True):
                     st.write(f"- {topic.get('name')}")
             
             # Get attending TAs
-            tas_url = f"http://web-api:4000/sessions/{session_id}/tas"
+            tas_url = f"http://localhost:4000/sessions/{session_id}/tas"
             tas = requests.get(tas_url).json()
             
             if tas:
@@ -180,5 +143,7 @@ if st.button("Get Session Details", use_container_width=True):
                     st.write(f"- {ta.get('firstName')} {ta.get('lastName')}")
         else:
             st.warning("Session not found.")
+    except ValueError:
+        st.error("Please enter a valid Session ID number")
     except Exception as e:
         st.error(f"Error: {e}")
