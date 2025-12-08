@@ -232,23 +232,23 @@ def assign_ta_to_session():
     Assign a TA to a study session 
     """
     try: 
-        data = request.get_json()
+        data = request.get_json(force=True)
 
-        #validate correct inputs r there
+        # Validate required fields
         required_fields = ["taID", "sessionID"]
-        #loop through
         for field in required_fields:
             if field not in data:
                 return jsonify({"error": f"Missing required field: {field}"}), 400
         
         cursor = db.get_db().cursor()
 
-        #check that TA is there
+        # Validate TA exists
         cursor.execute("SELECT * FROM TeachingAssistant WHERE nuID = %s", (data["taID"],))
         if not cursor.fetchone():
             return jsonify({"error": "Teaching assistant not found"}), 404
-        #check sessions there
-        cursor.execute("SELECT * FROM StudySessions WHERE sessionID = %s", (data["sessionID"],))
+
+        # Validate session exists
+        cursor.execute("SELECT * FROM StudySession WHERE sessionID = %s", (data["sessionID"],))
         if not cursor.fetchone():
             return jsonify({"error": "Study session not found"}), 404
         
@@ -257,13 +257,14 @@ def assign_ta_to_session():
         INSERT INTO TA_Attends_Session (taID, sessionID)
         VALUES (%s, %s)
         """
-        cursor.execute(query, (data["taID"], data["sesssionID"]))
+        cursor.execute(query, (data["taID"], data["sessionID"]))
 
         db.get_db().commit()
         cursor.close()
 
         return jsonify({"message": "TA assigned to session successfully"}), 201
-    except Error as e: 
+
+    except Exception as e:  # catch ALL errors
         return jsonify({"error": str(e)}), 500
     
 # DELETE /ta_assignments - remove TA assignments [TA-2]
