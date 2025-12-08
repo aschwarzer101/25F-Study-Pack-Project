@@ -29,13 +29,5 @@ if st.button('Location Management',
              use_container_width=True):
   st.switch_page('pages/11_Location_Management.py')
 
-if st.button('View the Simple API Demo', 
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/12_API_Test.py')
 
-if st.button("View Classification Demo",
-             type='primary',
-             use_container_width=True):
-  st.switch_page('pages/13_Classification.py')
   
