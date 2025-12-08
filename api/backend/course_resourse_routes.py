@@ -429,3 +429,55 @@ def update_topic(topic_id):
        return jsonify({"message": "Topic updated successfully"}), 200
    except Error as e:
        return jsonify({"error": str(e)}), 500
+
+
+# For professor pages
+# GET - Get courses taught by a professor [Professor-1]
+@course_resources.route("/professor/<int:prof_id>/courses", methods=["GET"])
+def get_professor_courses(prof_id):
+    """Get all courses taught by a specific professor"""
+    try:
+        cursor = db.get_db().cursor()
+        
+        query = """
+            SELECT c.CRN, c.courseNum, c.name, c.department
+            FROM Course c
+            JOIN Professor_Course pc ON c.CRN = pc.CRN
+            WHERE pc.profID = %s
+            ORDER BY c.department, c.courseNum
+        """
+        
+        cursor.execute(query, (prof_id,))
+        courses = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(courses), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+
+# GET - Get topics and students working on them [Professor-1.1]
+@course_resources.route("/course/<int:crn>/topics/students", methods=["GET"])
+def get_topics_with_students(crn):
+    """Get topics and which students are working on them for a course"""
+    try:
+        cursor = db.get_db().cursor()
+        
+        query = """
+            SELECT t.topicID, t.name AS topicName, 
+                   s.nuID, s.firstName, s.lastName
+            FROM Topic t
+            JOIN Course c ON t.CRN = c.CRN
+            JOIN ProjectGroup pg ON pg.CRN = c.CRN
+            JOIN ProjectGroup_Student pgs ON pgs.teamID = pg.teamID
+            JOIN Student s ON s.nuID = pgs.nuID
+            WHERE c.CRN = %s
+            ORDER BY t.name, s.lastName
+        """
+        
+        cursor.execute(query, (crn,))
+        results = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(results), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500

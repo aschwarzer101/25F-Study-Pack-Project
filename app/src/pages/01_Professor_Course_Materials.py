@@ -20,7 +20,7 @@ st.header('Course Materials Management')
 st.write(f"### Hi, {st.session_state['first_name']}.")
 
 # Select a course from the list of courses retrieved from the API
-courses = requests.get('http://api:4000/c/courses').json()
+courses = requests.get('http://api:4000/cr/course').json()
 selected_course = st.selectbox(
     "Select a course:",
     courses,
@@ -51,7 +51,7 @@ with st.expander("Upload New Course Material", expanded=False):
             "description": description,
             "CRN": selected_course["crn"]   # FIXED KEY
         }
-        response = requests.post('http://api:4000/c/resource', json=data)
+        response = requests.post('http://api:4000/cr/resources', json=data)
 
         if response.status_code == 201:
             st.success("Resource uploaded successfully!")
@@ -63,7 +63,7 @@ st.write("---")
 
 # Manage course materials (update/delete)
 st.subheader("Manage Existing Course Materials")
-resources = requests.get(f"http://api:4000/c/resources/{selected_course['crn']}").json()
+resources = requests.get(f"http://api:4000/cr/resources/{selected_course['crn']}").json()
 
 for resource in resources:
     with st.container():
@@ -81,7 +81,7 @@ for resource in resources:
         # Delete resource [Professor 1.3] -- FIXED INDENTATION
         with col3:
             if st.button("Delete", key=f"delete_{resource['resourceID']}"):
-                response = requests.delete(f"http://api:4000/c/resource/{resource['resourceID']}")
+                response = requests.delete(f"http://api:4000/cr/resources/{resource['resourceID']}")
                 if response.status_code == 200:
                     st.success("Resource deleted successfully!")
                 else:
@@ -100,7 +100,7 @@ for resource in resources:
                             "name": new_name,
                             "description": new_description
                         }
-                        response = requests.put(f"http://api:4000/c/resource/{resource['resourceID']}", json=update_data)
+                        response = requests.put(f"http://api:4000/cr/resources/{resource['resourceID']}", json=update_data)
                         if response.status_code == 200:
                             st.success("Resource updated successfully!")
                             st.session_state[f'editing_{resource["resourceID"]}'] = False

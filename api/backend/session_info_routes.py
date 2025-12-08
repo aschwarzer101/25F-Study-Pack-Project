@@ -335,3 +335,65 @@ def delete_study_session(session_id):
    except Error as e:
        return jsonify({"error": str(e)}), 500
 
+# for professor pages
+# GET - Get study time analytics by topic for a professor [Professor-1.6]
+@session_info.route("/professor/<int:prof_id>/study_time/topics", methods=["GET"])
+def get_professor_study_time_by_topic(prof_id):
+    """Get study time analytics grouped by topic for courses taught by professor"""
+    try:
+        current_app.logger.info(f'Getting study time by topic for professor {prof_id}')
+        cursor = db.get_db().cursor()
+        
+        query = """
+            SELECT t.name AS topicName, 
+                   SUM(TIMESTAMPDIFF(MINUTE, ss.startTime, ss.endTime)) AS totalMinutesStudied,
+                   ROUND(AVG(TIMESTAMPDIFF(MINUTE, ss.startTime, ss.endTime)), 2) AS avgMinutesPerSession,
+                   COUNT(DISTINCT ss.sessionID) AS sessionCount
+            FROM Professor p
+            JOIN Professor_Course pc ON p.profId = pc.profID
+            JOIN Course c ON pc.CRN = c.CRN
+            JOIN Topic t ON c.CRN = t.CRN
+            JOIN Session_Covers_Topic sct ON t.CRN = sct.CRN AND t.topicID = sct.topicID
+            JOIN StudySession ss ON sct.sessionID = ss.sessionID
+            WHERE p.profId = %s
+            GROUP BY t.topicID, t.name
+            ORDER BY totalMinutesStudied DESC
+        """
+        
+        cursor.execute(query, (prof_id,))
+        results = cursor.fetchall()
+        cursor.close()
+        
+        current_app.logger.info(f'Retrieved study time data for {len(results)} topics')
+        return jsonify(results), 200
+        
+    except Error as e:
+        current_app.logger.error(f'Database error: {str(e)}')
+        return jsonify({"error": str(e)}), 500
+
+# GET - Get sessions for a specific topic
+@session_info.route("/topic/<string:topic_name>/sessions", methods=["GET"])
+def get_sessions_by_topic(topic_name):
+    """Get all study sessions that covered a specific topic"""
+    try:
+        cursor = db.get_db().cursor()
+        
+        query = """
+            SELECT ss.sessionID, ss.date, ss.startTime, ss.endTime,
+                   sl.building, sl.room,
+                   TIMESTAMPDIFF(MINUTE, ss.startTime, ss.endTime) AS durationMinutes
+            FROM StudySession ss
+            JOIN Session_Covers_Topic sct ON ss.sessionID = sct.sessionID
+            JOIN Topic t ON sct.CRN = t.CRN AND sct.topicID = t.topicID
+            JOIN StudyLocation sl ON ss.locID = sl.locID
+            WHERE t.name = %s
+            ORDER BY ss.date DESC, ss.startTime DESC
+        """
+        
+        cursor.execute(query, (topic_name,))
+        sessions = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(sessions), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
