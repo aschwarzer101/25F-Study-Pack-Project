@@ -1,23 +1,18 @@
 import streamlit as st
+from modules.nav import SideBarLinks
 import requests
 import pandas as pd
 from datetime import datetime, date
 
 st.set_page_config(
     page_title="Find Tutoring Opportunities",
-    page_icon="📚",
+    page_icon=":material/handshake:",
     layout="wide"
 )
 
-# Initialize sidebar
-try:
-    from modules.nav import SideBarLinks
-    SideBarLinks()
-except ImportError:
-    st.sidebar.title("Peer Tutor Portal")
-    st.sidebar.markdown("---")
+SideBarLinks()
 
-st.title("Find Tutoring Opportunities")
+st.title(":material/search: Find Tutoring Opportunities")
 st.markdown("Browse and sign up for study sessions that need tutoring help")
 st.markdown("---")
 

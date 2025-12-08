@@ -61,10 +61,10 @@ def ClassificationNav():
 
 #### ------------------------ Tutor Role ------------------------
 def TutorHomeNav():
-    st.sidebar.page_link("pages/30_Peer_Tutor_Home.py", label="Peer Tutor Home Page", icon="🏠")
-    st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources")
-    st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities")
-    st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts")
+    st.sidebar.page_link("pages/30_Peer_Tutor_Home.py", label="Peer Tutor Home Page", icon=":material/home:")
+    st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources", icon=":material/library_books:")
+    st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities", icon=":material/handshake:")
+    st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts", icon=":material/people:")
 
 
 # --------------------------------Links Function -----------------------------------------------
