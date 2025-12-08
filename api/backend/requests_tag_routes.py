@@ -292,3 +292,31 @@ def create_tag():
         }), 201
     except Error as e:
         return jsonify({"error":str(e)}), 500
+    
+# DELETE /tags/{tagID} - Delete tags [TA-6]
+@requests_tags.route("/tags/<int:tag_id>", methods=["DELETE"])
+def delete_tag(tag_id):
+    """
+    Remove a tag [TA-6]
+    Deletes the tag and all associations
+    """
+    try:
+        cursor = db.get_db().cursor()
+        
+        # make sure tag exists
+        cursor.execute("SELECT * FROM Tag WHERE tagID = %s", (tag_id,))
+        if not cursor.fetchone():
+            return jsonify({"error": "Tag not found"}), 404
+        
+        # delete entry in Request_Tags first due to FK
+        cursor.execute("DELETE FROM Request_Tags WHERE tagID = %s", (tag_id,))
+        
+        # delete the tag itself
+        cursor.execute("DELETE FROM Tag WHERE tagID = %s", (tag_id,))
+        
+        db.get_db().commit()
+        cursor.close()
+
+        return jsonify({"message": "Tag deleted"}), 200
+    except Error as e: 
+        return jsonify({"error": str(e)}), 500
