@@ -39,7 +39,7 @@ def TAAdminHomeNav():
     )
 
 def StudentDirectoryNav():
-    st.sidebar.page_link("pages/14_Student_Directory.py", label="Student Directory", icon=":material/recent_actors:")
+    st.sidebar.page_link("pages/14_Student_Directory.py", label="Admin Directory", icon=":material/recent_actors:")
 
 def SessionRequests():
     st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon=":material/person_raised_hand:")
@@ -47,7 +47,7 @@ def SessionRequests():
 
 def LocationManagement():
     st.sidebar.page_link(
-        "pages/11_Location_Management.py", label="Location Management", icon=":material/apartment:"
+        "pages/11_Location_Management.py", label="Location Directory", icon=":material/apartment:"
     )
 
 def ClassificationNav():
@@ -61,10 +61,10 @@ def ClassificationNav():
 
 #### ------------------------ Tutor Role ------------------------
 def TutorHomeNav():
-    st.sidebar.page_link("pages/30_Peer_Tutor_Home.py", label="Peer Tutor Home Page", icon="🏠")
-    st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources")
-    st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities")
-    st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts")
+    st.sidebar.page_link("pages/30_Peer_Tutor_Home.py", label="Peer Tutor Home Page", icon=":material/home:")
+    st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources", icon=":material/library_books:")
+    st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities", icon=":material/handshake:")
+    st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts", icon=":material/people:")
 
 
 # --------------------------------Links Function -----------------------------------------------
@@ -90,7 +90,7 @@ def SideBarLinks(show_home=False):
 
         # Show World Bank Link and Map Demo Link if the user is a political strategy advisor role.
         if st.session_state["role"] == "pol_strat_advisor":
-            PolStratAdvHomeNav()
+           # PolStratAdvHomeNav()
             WorldBankVizNav()
             MapDemoNav()
 

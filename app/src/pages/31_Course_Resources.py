@@ -6,13 +6,13 @@ from datetime import date
 
 st.set_page_config(
     page_title="Course Resources",
-    page_icon=":material/book:",
+    page_icon=":material/library_books:",
     layout="wide"
 )
 
 SideBarLinks()
 
-st.title(":material/book: Course Resources")
+st.title(":material/library_books: Course Resources")
 st.markdown("View and manage study materials for courses you tutor")
 st.markdown("---")
 
