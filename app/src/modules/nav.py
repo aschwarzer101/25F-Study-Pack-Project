@@ -49,9 +49,9 @@ def ClassificationNav():
 
 def AdminHomeNav():
     st.sidebar.page_link("pages/20_Admin_Home.py", label="Admin Home Page", icon=":material/home:")
-    st.sidebar.page_link("pages/22_student_session_page.py", label="User Management", icon=":material/supervisor_account:")
-    st.sidebar.page_link("pages/23_student_courses_page.py", label="System Logs", icon=":material/list_alt:")
-    st.sidebar.page_link("pages/25_System_Settings.py", label="System Settings", icon=":material/settings:")
+    st.sidebar.page_link("pages/22_student_session_page.py", label="Study Sessions", icon=":material/supervisor_account:")
+    st.sidebar.page_link("pages/23_student_courses_page.py", label="Courses", icon=":material/list_alt:")
+    st.sidebar.page_link("pages/25_find_tutors.py", label="Tutors", icon=":material/handshake:")
 
 
 
