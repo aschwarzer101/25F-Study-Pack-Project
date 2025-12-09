@@ -47,6 +47,11 @@ def ClassificationNav():
     )
 
 
+def AdminHomeNav():
+    st.sidebar.page_link("pages/20_Admin_Home.py", label="Admin Home Page", icon=":material/home:")
+    st.sidebar.page_link("pages/21_User_Management.py", label="User Management", icon=":material/supervisor_account:")
+    st.sidebar.page_link("pages/22_System_Logs.py", label="System Logs", icon=":material/list_alt:")
+    st.sidebar.page_link("pages/23_System_Settings.py", label="System Settings", icon=":material/settings:")
 
 
 
@@ -90,7 +95,10 @@ def SideBarLinks(show_home=False):
             StudentDirectoryNav()
             SessionRequests()
             LocationManagement()
-            
+
+        # If the user is an student 
+        if st.session_state["role"] == "student":
+            AdminHomeNav()
             
 
         # If the user is an administrator, give them access to the administrator pages
