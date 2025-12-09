@@ -19,9 +19,9 @@ if st.button('Find a study session',
 if st.button('Find a course', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/22_student_courses_page.py')
+  st.switch_page('pages/23_student_courses_page.py')
 
 if st.button('Find a tutor', 
              type='primary',
              use_container_width=True):
-  st.switch_page('pages/23_find_tutors.py')
+  st.switch_page('pages/25_find_tutors.py')
