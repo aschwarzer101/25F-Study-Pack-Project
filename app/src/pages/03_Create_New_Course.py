@@ -312,9 +312,3 @@ with tab2:
         else:
             st.info("📝 No courses found. Create your first course using the tab above!")
             
-            # Helpful tips
-            st.write("**Getting Started:**")
-            st.write("1. Click on the 'Create New Course' tab above")
-            st.write("2. Fill in the course details")
-            st.write("3. Click 'Create Course' to add it to the system")
-

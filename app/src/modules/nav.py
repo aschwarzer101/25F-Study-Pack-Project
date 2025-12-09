@@ -14,22 +14,24 @@ def AboutPageNav():
     st.sidebar.page_link("pages/40_About.py", label="About", icon="🧠")
 
 
-#### ------------------------ Examples for Role of pol_strat_advisor ------------------------
+#### ------------------------ Examples for Role of Professor ------------------------
 def ProfessorHomeNav():
     st.sidebar.page_link(
         "pages/00_Professor_Home.py", label="Professor Home", icon="👤"
     )
 
 
-def WorldBankVizNav():
+def Professor_Course_Materials():
     st.sidebar.page_link(
-        "pages/01_World_Bank_Viz.py", label="World Bank Visualization", icon="🏦"
+        "pages/01_Professor_Course_Materials.py", label="Course Materials", icon=":material/library_books:"
     )
 
 
-def MapDemoNav():
-    st.sidebar.page_link("pages/02_Map_Demo.py", label="Map Demonstration", icon="🗺️")
+def StudentAnalyticsNav():
+    st.sidebar.page_link("pages/02_Professor_Student_Analytics.py", label="Student Analytics", icon="📊")
 
+def CreateNewCourseNav():
+    st.sidebar.page_link("pages/03_Create_New_Course.py", label="Create New Course", icon="➕")
 
 ## ------------------------ Examples for Role of usaid_worker ------------------------
 
@@ -65,6 +67,7 @@ def TutorHomeNav():
     st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources", icon=":material/library_books:")
     st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities", icon=":material/handshake:")
     st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts", icon=":material/people:")
+
 
 
 # --------------------------------Links Function -----------------------------------------------

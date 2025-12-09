@@ -318,9 +318,4 @@ if selected_course:
 
                 st.divider()
 
-# Footer with helpful info
-st.write("---")
-st.caption("💡 **Tips:**")
-st.caption("• Click 'Upload New Course Material' to add resources (User Story 1.2)")
-st.caption("• Click 'Edit' to modify resource details (User Story 1.4)")
-st.caption("• Click 'Delete' to remove outdated materials (User Story 1.3)")
+
