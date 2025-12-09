@@ -210,7 +210,7 @@ SELECT * FROM Student LIMIT 5;
 
 ##  Demo Video
 
-[Link to be added after recording]
+https://youtu.be/Wg2ncc3vFfA
 
 ---
 
