@@ -405,3 +405,42 @@ def remove_tutor_assignment():
         return jsonify({"message": "Tutor assignment removed"}), 200
     except Error as e: 
         return jsonify({"error": str(e)}), 500
+
+# GET - View all students assigned to a tutor [Tutor-4]
+@person_assignment.route("/tutor_students", methods=["GET"])
+def get_tutor_students():
+    """
+    Get all students associated with a peer tutor
+    Based on PeerTutors_Student bridge table
+    """
+    try:
+        tutor_id = request.args.get("tutorID")
+        
+        if not tutor_id:
+            return jsonify({"error": "Missing required parameter: tutorID"}), 400
+        
+        cursor = db.get_db().cursor()
+        
+        # Check if tutor exists
+        cursor.execute("SELECT * FROM PeerTutor WHERE nuID = %s", (tutor_id,))
+        if not cursor.fetchone():
+            cursor.close()
+            return jsonify({"error": "Tutor not found"}), 404
+        
+        # Get students for this tutor
+        query = """
+            SELECT s.nuID, s.firstName, s.lastName, s.email
+            FROM PeerTutor pt
+            JOIN PeerTutors_Student pts ON pt.nuID = pts.tutorID
+            JOIN Student s ON pts.nuID = s.nuID
+            WHERE pt.nuID = %s
+            ORDER BY s.lastName, s.firstName
+        """
+        
+        cursor.execute(query, (tutor_id,))
+        students = cursor.fetchall()
+        cursor.close()
+        
+        return jsonify(students), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500

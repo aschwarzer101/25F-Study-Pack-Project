@@ -196,7 +196,7 @@ VALUES
 # Strong Entity: PeerTutor (30-40 rows)
 INSERT INTO PeerTutor (nuID, firstName, lastName)
 VALUES
-(003123456, 'Ashley', 'Kumar'),
+(003123456, 'John', 'Adams'),
 (003234567, 'Brian', 'O''Connor'),
 (003345678, 'Diana', 'Nguyen'),
 (003456789, 'Eric', 'Foster'),

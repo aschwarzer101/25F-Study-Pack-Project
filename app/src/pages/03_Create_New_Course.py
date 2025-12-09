@@ -318,8 +318,3 @@ with tab2:
             st.write("2. Fill in the course details")
             st.write("3. Click 'Create Course' to add it to the system")
 
-st.write("---")
-st.caption("💡 **User Story Covered:**")
-st.caption("• 1.5: Create a new course (POST /cr/course)")
-st.caption("• View all courses (GET /cr/course)")
-st.caption("• View course details (GET /cr/course/{crn})")
