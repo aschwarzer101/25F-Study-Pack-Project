@@ -16,22 +16,11 @@ def AboutPageNav():
 
 #### ------------------------ Examples for Role of Professor ------------------------
 def ProfessorHomeNav():
-    st.sidebar.page_link(
-        "pages/00_Professor_Home.py", label="Professor Home", icon="👤"
-    )
-
-
-def Professor_Course_Materials():
-    st.sidebar.page_link(
-        "pages/01_Professor_Course_Materials.py", label="Course Materials", icon=":material/library_books:"
-    )
-
-
-def StudentAnalyticsNav():
+    st.sidebar.page_link("pages/00_Professor_Home.py", label="Professor Home", icon="👤")
+    st.sidebar.page_link("pages/01_Professor_Course_Materials.py", label="Course Materials", icon=":material/library_books:")
     st.sidebar.page_link("pages/02_Professor_Student_Analytics.py", label="Student Analytics", icon="📊")
-
-def CreateNewCourseNav():
     st.sidebar.page_link("pages/03_Create_New_Course.py", label="Create New Course", icon="➕")
+
 
 ## ------------------------ Examples for Role of usaid_worker ------------------------
 
