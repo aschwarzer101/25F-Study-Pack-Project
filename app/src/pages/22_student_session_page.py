@@ -12,7 +12,6 @@ SideBarLinks()
 st.title('Available Study Sessions')
 
 st.write('\n\n')
-st.write('## Model 1 Maintenance')
 
 
 st.write("## All Upcoming Study Sessions")
