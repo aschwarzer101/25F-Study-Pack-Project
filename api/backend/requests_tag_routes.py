@@ -79,8 +79,8 @@ def get_session_requests():
             sr.dateCreated, 
             sr.status,
             sr.adminID,
-            GROUP_CONCAT(s.firstName) AS studentFirstNames,
-            GROUP_CONCAT(t.tagName) AS tags
+            GROUP_CONCAT(DISTINCT s.firstName SEPARATOR ', ') AS studentFirstNames,
+            GROUP_CONCAT(DISTINCT t.tagName SEPARATOR ', ') AS tags
         FROM SessionRequest sr
         JOIN Requesting_Students rs ON sr.requestID = rs.requestID
         JOIN Student s ON rs.nuID = s.nuID

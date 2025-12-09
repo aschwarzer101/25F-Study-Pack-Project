@@ -268,34 +268,35 @@ def upload_resource():
    try:
        data = request.get_json()
       
-       # Validate required fields
-       required_fields = ["resourceID", "name", "type", "dateUploaded", "description", "CRN"]
+       # removed resourceID since it's auto-incremented
+       required_fields = ["name", "type", "dateUploaded", "CRN"]
        for field in required_fields:
            if field not in data:
                return jsonify({"error": f"Missing required field: {field}"}), 400
       
        cursor = db.get_db().cursor()
       
+       # removed resourceID from INSERT bc it will be auto-generated
        query = """
-           INSERT INTO Resource (resourceID, name, type, dateUploaded, description, CRN)
-           VALUES (%s, %s, %s, %s, %s, %s)
+           INSERT INTO Resource (name, type, dateUploaded, description, CRN)
+           VALUES (%s, %s, %s, %s, %s)
        """
       
        cursor.execute(query, (
-           data["resourceID"],
            data["name"],
            data["type"],
            data["dateUploaded"],
-           data["description"],
+           data.get("description"),  # description is optional
            data["CRN"]
        ))
       
        db.get_db().commit()
+       new_resource_id = cursor.lastrowid  # get the auto-generated ID
        cursor.close()
       
        return jsonify({
            "message": "Resource uploaded successfully",
-           "resourceID": data["resourceID"]
+           "resourceID": new_resource_id
        }), 201
    except Error as e:
        return jsonify({"error": str(e)}), 500

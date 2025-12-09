@@ -53,7 +53,6 @@ def create_app():
     # Register the routes from each Blueprint with the app object
     # and give a url prefix to each
     app.logger.info("create_app(): registering blueprints with Flask app object.")
-    app.register_blueprint(ngos, url_prefix="/ngo")
     app.register_blueprint(student_management, url_prefix="/sm")
     app.register_blueprint(course_resources, url_prefix="/cr")
     app.register_blueprint(session_info, url_prefix="/si")
@@ -63,37 +62,7 @@ def create_app():
     return app
 
 def setup_logging(app):
-    """
-    Configure logging for the Flask application in both files and console (Docker Desktop for this project)
-    
-    Args:
-        app: Flask application instance to configure logging for
-    """
-    # if not os.path.exists('logs'):
-    #     os.mkdir('logs')
-
-    ## Set up FILE HANDLER for all levels
-    # file_handler = RotatingFileHandler(
-    #     'logs/api.log',
-    #     maxBytes=10240,
-    #     backupCount=10
-    # )
-    # file_handler.setFormatter(logging.Formatter(
-    #     '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-    # ))
-    
-    # Make sure we are capturing all levels of logging into the log files. 
-    # file_handler.setLevel(logging.DEBUG)  # Capture all levels in file
-    # app.logger.addHandler(file_handler)
-
-    # ## Set up CONSOLE HANDLER for all levels
-    # console_handler = logging.StreamHandler()
-    # console_handler.setFormatter(logging.Formatter(
-    #     '%(asctime)s %(levelname)s: %(message)s'
-    # ))
-    # Debug level capture makes sure that all log levels are captured
-    # console_handler.setLevel(logging.DEBUG)
-    # app.logger.addHandler(console_handler)
+   
     pass
     
     

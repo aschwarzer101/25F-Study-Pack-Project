@@ -11,45 +11,34 @@ def HomeNav():
 
 
 def AboutPageNav():
-    st.sidebar.page_link("pages/30_About.py", label="About", icon="🧠")
+    st.sidebar.page_link("pages/40_About.py", label="About", icon="🧠")
 
 
-#### ------------------------ Examples for Role of pol_strat_advisor ------------------------
+#### ------------------------ Examples for Role of Professor ------------------------
 def ProfessorHomeNav():
-    st.sidebar.page_link(
-        "pages/00_Professor_Home.py", label="Professor Home", icon="👤"
-    )
-
-
-def WorldBankVizNav():
-    st.sidebar.page_link(
-        "pages/01_World_Bank_Viz.py", label="World Bank Visualization", icon="🏦"
-    )
-
-
-def MapDemoNav():
-    st.sidebar.page_link("pages/02_Map_Demo.py", label="Map Demonstration", icon="🗺️")
+    st.sidebar.page_link("pages/00_Professor_Home.py", label="Professor Home", icon="👤")
+    st.sidebar.page_link("pages/01_Professor_Course_Materials.py", label="Course Materials", icon=":material/library_books:")
+    st.sidebar.page_link("pages/02_Professor_Student_Analytics.py", label="Student Analytics", icon="📊")
+    st.sidebar.page_link("pages/03_Create_New_Course.py", label="Create New Course", icon="➕")
 
 
 ## ------------------------ Examples for Role of usaid_worker ------------------------
 
 def TAAdminHomeNav():
     st.sidebar.page_link(
-      "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon="🏠"
+      "pages/10_TA_Admin_Home.py", label="TA Admin Home Page", icon=":material/home:"
     )
 
 def StudentDirectoryNav():
-    st.sidebar.page_link("pages/14_Student_Directory.py", label="Student Directory", icon="📁")
+    st.sidebar.page_link("pages/14_Student_Directory.py", label="Admin Directory", icon=":material/recent_actors:")
 
-def AddNgoNav():
-    st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon="➕")
+def SessionRequests():
+    st.sidebar.page_link("pages/15_Session_Requests.py", label="Session Requests", icon=":material/person_raised_hand:")
 
-def ApiTestNav():
-    st.sidebar.page_link("pages/12_API_Test.py", label="Test the API", icon="🛜")
 
-def PredictionNav():
+def LocationManagement():
     st.sidebar.page_link(
-        "pages/11_Prediction.py", label="Regression Prediction", icon="📈"
+        "pages/11_Location_Management.py", label="Location Directory", icon=":material/apartment:"
     )
 
 def ClassificationNav():
@@ -58,15 +47,21 @@ def ClassificationNav():
     )
 
 
+def AdminHomeNav():
+    st.sidebar.page_link("pages/20_Admin_Home.py", label="Admin Home Page", icon=":material/home:")
+    st.sidebar.page_link("pages/22_student_session_page.py", label="Study Sessions", icon=":material/supervisor_account:")
+    st.sidebar.page_link("pages/23_student_courses_page.py", label="Courses", icon=":material/list_alt:")
+    st.sidebar.page_link("pages/25_find_tutors.py", label="Tutors", icon=":material/handshake:")
 
 
 
-#### ------------------------ System Admin Role ------------------------
-def AdminPageNav():
-    st.sidebar.page_link("pages/20_Admin_Home.py", label="System Admin", icon="🖥️")
-    st.sidebar.page_link(
-        "pages/21_ML_Model_Mgmt.py", label="ML Model Management", icon="🏢"
-    )
+#### ------------------------ Tutor Role ------------------------
+def TutorHomeNav():
+    st.sidebar.page_link("pages/30_Peer_Tutor_Home.py", label="Peer Tutor Home Page", icon=":material/home:")
+    st.sidebar.page_link("pages/31_Course_Resources.py", label="Course Resources", icon=":material/library_books:")
+    st.sidebar.page_link("pages/32_Tutoring_Opportunities.py", label="Tutoring Opportunities", icon=":material/handshake:")
+    st.sidebar.page_link("pages/33_Student_Contacts.py", label="Student Contacts", icon=":material/people:")
+
 
 
 # --------------------------------Links Function -----------------------------------------------
@@ -91,27 +86,27 @@ def SideBarLinks(show_home=False):
     if st.session_state["authenticated"]:
 
         # Show World Bank Link and Map Demo Link if the user is a political strategy advisor role.
-        if st.session_state["role"] == "pol_strat_advisor":
-            PolStratAdvHomeNav()
-            WorldBankVizNav()
-            MapDemoNav()
+        if st.session_state["role"] == "Professor":
+            ProfessorHomeNav()
 
         # If the user role is a ta admin, show the Api Testing page
         if st.session_state["role"] == "ta_admin":
             TAAdminHomeNav()
             StudentDirectoryNav()
-            AddNgoNav()
-            PredictionNav()
-            ApiTestNav()
-            ClassificationNav()
+            SessionRequests()
+            LocationManagement()
+
+        # If the user is an student 
+        if st.session_state["role"] == "student":
+            AdminHomeNav()
             
 
         # If the user is an administrator, give them access to the administrator pages
-        if st.session_state["role"] == "administrator":
-            AdminPageNav()
+        if st.session_state["role"] == "tutor":
+            TutorHomeNav()
 
-    # Always show the About page at the bottom of the list of links
-    AboutPageNav()
+    # # Always show the About page at the bottom of the list of links
+    # AboutPageNav()
 
     if st.session_state["authenticated"]:
         # Always show a logout button if there is a logged in user

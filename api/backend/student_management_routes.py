@@ -191,3 +191,17 @@ def create_peer_tutor(nuid):
    except Error as e:
        current_app.logger.error(f'Database error: {str(e)}')
        return jsonify({"error": str(e)}), 500
+   
+# adding just for TA Admin functionality
+# GET /peer_tutors - get list of peer tutors [TA-3]
+@student_management.route("/peer_tutors", methods=["GET"])
+def get_peer_tutors():
+    """Get all peer tutors"""
+    try:
+        cursor = db.get_db().cursor()
+        cursor.execute("SELECT * FROM PeerTutor ORDER BY lastName, firstName")
+        tutors = cursor.fetchall()
+        cursor.close()
+        return jsonify(tutors), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
